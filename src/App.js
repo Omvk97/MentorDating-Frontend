@@ -2,9 +2,10 @@ import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from '@material-ui/core/Container';
 
-import styles from './App.styles';
+import useStyles from './App.styles';
 
 import SignIn from "./components/sign_in/SignIn.component";
+import Header from './components/header/Header.component'
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
@@ -18,10 +19,11 @@ const theme = createMuiTheme({
 });
 
 function App() {
-  const classes = styles();
+  const classes = useStyles();
 
   return (
     <ThemeProvider theme={theme}>
+    <Header/>
     <Container component="main" maxWidth="xl">
       <CssBaseline />
       <SignIn />

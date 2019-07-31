@@ -12,7 +12,7 @@ import Container from "@material-ui/core/Container";
 
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
-import styles from "./SignIn.styles";
+import useStyles from "./SignIn.styles";
 
 function SignIn() {
   const [emailInput, setEmailInput] = useState("");
@@ -24,7 +24,7 @@ function SignIn() {
     console.log("PasswordInput: ", passwordInput);
   }
 
-  const classes = styles();
+  const classes = useStyles();
   return (
     <Container maxWidth="xs">
       <div className={classes.formContainer}>
