@@ -1,160 +1,116 @@
 import React, { useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
+
 import AppBar from "@material-ui/core/AppBar";
+import ListItemText from "@material-ui/core/ListItemText";
 import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import InputBase from "@material-ui/core/InputBase";
-import Badge from "@material-ui/core/Badge";
+import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import SearchIcon from "@material-ui/icons/Search";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MessageIcon from "@material-ui/icons/Message";
+import Avatar from "@material-ui/core/Avatar";
+import Divider from "@material-ui/core/Divider";
+import Button from "@material-ui/core/Button";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import MenuIcon from "@material-ui/icons/Menu";
 import Editicon from "@material-ui/icons/Edit";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
-import MoreIcon from "@material-ui/icons/MoreVert";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 
 import useStyles from "./Header.styles";
+import SideDrawer from "./drawer/Drawer.component";
 
-export default function PrimarySearchAppBar() {
-  const classes = useStyles();
+function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const classes = useStyles();
 
-  function handleProfileMenuOpen(event) {
-    setAnchorEl(event.currentTarget);
-  }
-
-  function handleMobileMenuClose() {
-    setMobileMoreAnchorEl(null);
-  }
+  const accountMenuOpen = Boolean(anchorEl);
 
   function handleMenuClose() {
     setAnchorEl(null);
-    handleMobileMenuClose();
   }
-
-  function handleMobileMenuOpen(event) {
-    setMobileMoreAnchorEl(event.currentTarget);
-  }
-
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>
-        <ListItemIcon>
-          <Editicon />
-        </ListItemIcon>
-        <ListItemText primary="Rediger profil" />
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <ListItemIcon>
-          <LogoutIcon />
-        </ListItemIcon>
-        <ListItemText primary="Log ud" />
-      </MenuItem>
-    </Menu>
-  );
-
-  const mobileMenuId = "primary-search-account-menu-mobile";
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MessageIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
 
   return (
-    <div className={classes.grow}>
-      <AppBar position="fixed">
+    <div className={classes.root}>
+      <AppBar position="static">
         <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+            onClick={() => setSideDrawerOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            component={RouterLink}
+            to="/"
+            variant="h6"
+            className={classes.title}
+          >
             MentorDating
           </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+          {false === true ? (
+            <div>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={event => setAnchorEl(event.currentTarget)}
+                color="inherit"
+              >
+                <Avatar className={classes.avatar}>O</Avatar>
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "center"
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center"
+                }}
+                open={accountMenuOpen}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleMenuClose}>
+                  <ListItemIcon>
+                    <Editicon />
+                  </ListItemIcon>
+                  <ListItemText primary="Rediger profil" />
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={handleMenuClose}>
+                  <ListItemIcon>
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Log ud" />
+                </MenuItem>
+              </Menu>
             </div>
-            <InputBase
-              placeholder="Søg..."
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
-          <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <IconButton aria-label="new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <MessageIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+          ) : (
+            <Button
+              component={RouterLink}
+              to="/login"
               color="inherit"
+              className={classes.logInButton}
             >
-              <AccountCircle />
-            </IconButton>
-          </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
+              LOG IND
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      <SideDrawer
+        open={sideDrawerOpen}
+        onDrawerClose={() => setSideDrawerOpen(false)}
+      />
     </div>
   );
 }
+
+export default Header;
