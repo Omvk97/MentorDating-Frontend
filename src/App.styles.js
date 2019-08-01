@@ -5,6 +5,9 @@ const useStyles = makeStyles(theme => ({
     body: {
       backgroundColor: theme.palette.common.white
     }
+  },
+  container: {
+    marginTop: theme.spacing(12)
   }
 }));
 
