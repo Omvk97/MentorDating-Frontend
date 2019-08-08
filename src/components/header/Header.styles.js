@@ -1,6 +1,6 @@
 import { makeStyles, fade } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
+export default makeStyles(theme => ({
   root: {
     flexGrow: 1
   },
@@ -57,5 +57,3 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1)
   }
 }));
-
-export default useStyles;

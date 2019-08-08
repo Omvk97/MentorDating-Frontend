@@ -1,6 +1,6 @@
-import { takeLatest, put, all, call } from "redux-saga/effects";
+import { takeLatest, put, all, call } from 'redux-saga/effects';
 
-import UserActionTypes from "./user.types";
+import UserActionTypes from './user.types';
 
 import {
   signInSuccess,
@@ -8,24 +8,17 @@ import {
   signOutSuccess,
   signOutFailure,
   signUpSuccess,
-  signUpFailure
-} from "./user.actions";
+  signUpFailure,
+} from './user.actions';
 
-import {
-  auth,
-  googleProvider,
-  createUserProfileDocument,
-  getCurrentUser
-} from "../../firebase/firebase.utils.js";
+import { auth, googleProvider } from '../../firebase/firebase.utils.js';
+import { getCurrentUser } from '../../firebase/firestore.users';
+import { createUserProfileDocument } from '../../firebase/firestore.users';
+import { addMentorApplication } from '../../firebase/firestore.mentorApplications';
 
 export function* getSnapshotFromUserAuth(userAuth, additionalData) {
   try {
-    const userRef = yield call(
-      createUserProfileDocument,
-      userAuth,
-      additionalData
-    );
-    const userSnapshot = yield userRef.get();
+    const userSnapshot = yield call(createUserProfileDocument, userAuth, additionalData);
     yield put(signInSuccess({ id: userSnapshot.id, ...userSnapshot.data() }));
   } catch (error) {
     yield put(signInFailure(error));
@@ -73,8 +66,17 @@ export function* signUp({ payload: { email, password, displayName } }) {
   try {
     const { user } = yield auth.createUserWithEmailAndPassword(email, password);
     yield put(signUpSuccess({ user, additionalData: { displayName } }));
-  } catch (error) {    
-    yield put(signUpFailure("Email allerede i brug"));
+  } catch (error) {
+    yield put(signUpFailure(error.message));
+  }
+}
+
+export function* sendApplication({ payload: { userId, application } }) {
+  try {
+    yield addMentorApplication(userId, application);
+    
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -106,13 +108,18 @@ export function* onSignUpSuccess() {
   yield takeLatest(UserActionTypes.SIGN_UP_SUCCESS, signInAfterSignUp);
 }
 
-export function* userSagas() {
+export function* onMentorSendApplication() {
+  yield takeLatest(UserActionTypes.SEND_MENTOR_APPLICATION, sendApplication);
+}
+
+export default function* userSagas() {
   yield all([
     call(onGoogleSignInStart),
     call(onEmailSignInStart),
     call(onCheckUserSession),
     call(onSignOutStart),
     call(onSignUpStart),
-    call(onSignUpSuccess)
+    call(onSignUpSuccess),
+    call(onMentorSendApplication),
   ]);
 }

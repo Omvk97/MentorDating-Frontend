@@ -1,13 +1,18 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect';
 
-const selectUser = state => state.user;
+const selectUserState = state => state.user;
 
 export const selectCurrentUser = createSelector(
-  [selectUser],
+  [selectUserState],
   user => user.currentUser
 );
 
 export const selectErrorMessage = createSelector(
-  [selectUser],
+  [selectUserState],
   user => user.errorMessage
+);
+
+export const selectIsUserAMentor = createSelector(
+  [selectUserState],
+  user => user.isUserMentor
 );

@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const drawerWidth = 300; // TODO - MAKE BIGGER ON MOBILE
 
-const useStyles = makeStyles(theme => ({
+export default makeStyles(theme => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0
@@ -18,5 +18,3 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "flex-end"
   }
 }));
-
-export default useStyles;

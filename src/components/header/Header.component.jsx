@@ -46,7 +46,7 @@ function Header({ currentUser, signOutStart }) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed">
+      <AppBar position="fixed" className={classes.bar}>
         <Toolbar>
           <IconButton
             edge="start"

@@ -1,14 +1,17 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
+export default makeStyles(theme => ({
   "@global": {
     body: {
       backgroundColor: theme.palette.common.white
     }
   },
-  container: {
-    marginTop: theme.spacing(12)
+  toolbarCss: theme.mixins.toolbar,
+  main: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column"
   }
 }));
-
-export default useStyles;
