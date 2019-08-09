@@ -35,6 +35,14 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         errorMessage: action.payload,
       };
+    case UserActionTypes.UPDATE_MENTOR_INFO_SUCCESS:
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          mentorInfo: action.payload,
+        },
+      };
     case MentorActionTypes.SIGN_UP_MENTOR_SUCCESS:
       return {
         ...state,

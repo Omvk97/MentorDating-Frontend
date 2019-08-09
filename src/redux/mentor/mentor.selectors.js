@@ -1,13 +1,18 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect';
 
-const selectMentor = state => state.mentor;
+const selectMentorState = state => state.mentor;
 
 export const selectAllMentors = createSelector(
-  [selectMentor],
+  [selectMentorState],
   mentor => mentor.mentors
 );
 
 export const selectisMentorsFetching = createSelector(
-  [selectMentor],
+  [selectMentorState],
   mentor => mentor.isFetching
+);
+
+export const selectCategoryOptions = createSelector(
+  [selectMentorState],
+  mentor => mentor.categoryOptions
 );

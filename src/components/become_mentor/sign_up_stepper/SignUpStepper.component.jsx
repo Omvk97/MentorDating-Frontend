@@ -17,7 +17,7 @@ import useStyles from './SignUpStepper.styles';
 
 import MentorExperienceSurvey from '../mentor_experience_survey/MentorExperienceSurvey.component';
 import PersonalInformation from '../personal_information/PersonalInformation.component';
-import { sendMentorApplication } from '../../../redux/user/user.actions';
+import { sendMentorApplication } from '../../../redux/mentor/mentor.actions';
 import DialogHeader from '../../closeable_dialog_header/DialogHeader.component';
 import { selectCurrentUser } from '../../../redux/user/user.selectors';
 
@@ -115,7 +115,7 @@ function SignUpProcess({ sendMentorApplication, history, currentUser }) {
 
   function sendApplication() {
     setSendApplicationAlertOpen(false);
-    sendMentorApplication({userId: currentUser.id, application: { ...mentorExperience, ...personalInformation }});
+    sendMentorApplication({ userId: currentUser.id, application: { ...mentorExperience, ...personalInformation } });
   }
 
   return (

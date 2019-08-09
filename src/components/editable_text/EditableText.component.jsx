@@ -6,11 +6,22 @@ import TextField from '@material-ui/core/Input';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
 
-function EditableText({ onChange, variant, value, multiline, textColor }) {
+function EditableText({
+  onChange,
+  variant,
+  value,
+  multiline,
+  textColor,
+  onSave,
+  id,
+  editSize,
+  tooltipTitle,
+}) {
   const [editable, setEditable] = useState(false);
 
   const styles = React.useMemo(() => {
@@ -19,13 +30,23 @@ function EditableText({ onChange, variant, value, multiline, textColor }) {
         ...theme.typography[variant],
         padding: 0,
       },
+      container: {
+        display: 'inline-block',
+      },
     }));
   }, [variant]);
 
   const classes = styles();
+
+  function onEditOrSave() {
+    if (editable) {
+      if (onSave) onSave(value, id);
+    }
+    setEditable(!editable);
+  }
   return (
-    <Grid container spacing={2} alignItems='center' justify='center'>
-      <Grid item xs={8}>
+    <div>
+      <Grid item xs={12}>
         {editable ? (
           <TextField
             color={textColor}
@@ -35,9 +56,9 @@ function EditableText({ onChange, variant, value, multiline, textColor }) {
             autoFocus
             onChange={onChange}
             value={value}
-            className={classes.input}
             inputProps={{
               spellCheck: false,
+              className: classes.input,
             }}
           />
         ) : (
@@ -46,17 +67,37 @@ function EditableText({ onChange, variant, value, multiline, textColor }) {
           </Typography>
         )}
       </Grid>
-      <Grid item xs={4}>
-        <IconButton color='secondary' onClick={() => setEditable(!editable)}>
-          {editable ? <SaveIcon /> : <EditIcon />}
-        </IconButton>
+      <Grid container justify='flex-end'>
+        <Tooltip title={`${editable ? 'Gem' : 'Rediger'} ${tooltipTitle}`}>
+          <IconButton
+            style={{ textAlign: 'end' }}
+            color='secondary'
+            onClick={onEditOrSave}
+            size={editSize ? editSize : 'medium'}>
+            {editable ? <SaveIcon /> : <EditIcon />}
+          </IconButton>
+        </Tooltip>
       </Grid>
-    </Grid>
+    </div>
   );
 }
 
 EditableText.propTypes = {
-  variant: PropTypes.string.isRequired,
+  variant: PropTypes.oneOf([
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h6',
+    'body1',
+    'body2',
+    'subtitle1',
+    'subtitle2',
+  ]),
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  tooltipTitle: PropTypes.string.isRequired,
 };
 
 export default EditableText;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 
@@ -17,66 +17,107 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Button from '@material-ui/core/Button';
 
-import InfoIcon from '@material-ui/icons/Info';
+import BookIcon from '@material-ui/icons/Book';
 import DescriptionIcon from '@material-ui/icons/Description';
+import SaveIcon from '@material-ui/icons/Save';
+
 import { useTheme } from '@material-ui/core/styles';
 
 import useStyles from './MentorProfile.styles';
-import { selectCurrentUser, selectMentorSignUpInfo } from '../../redux/user/user.selectors';
 import UploadPicture from './mentor_picture/UploadPicture.component';
 import DialogHeader from '../closeable_dialog_header/DialogHeader.component';
+import EditableText from '../editable_text/EditableText.component';
+import MentorBanner from './mentor_banner/MentorBanner.component';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { updateMentorInfoStart } from '../../redux/user/user.actions';
 
-function TabPanel({ children, value, index, ...other }) {
-  return (
-    <Typography
-      component='div'
-      role='tabpanel'
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-      {...other}>
-      <Box p={3}>{children}</Box>
-    </Typography>
-  );
-}
-
-function MentorTeachings({ currentUser, mentorSignUpInfo }) {
+function MentorTeachings({ currentUser, updateMentorInfoStart }) {
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [openTab, setOpenTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(0);
   const [uploadPictureDialogOpen, setUploadPictureDialogOpen] = useState(false);
+  const [mentorInfoClone, setMentorInfoClone] = useState(null);
+  const [mentorInfoHasChanged, setMentorInfoHasChanged] = useState(false);
 
-  if (!currentUser) return null;
+  useEffect(() => {
+    if (currentUser) {
+      setMentorInfoClone(Object.assign({}, currentUser.mentorInfo));
+    }
+    return () => {};
+  }, [currentUser]);
+
+  if (!currentUser || !mentorInfoClone) return null;
+  const {
+    categories,
+    contactEmail,
+    description,
+    contactPhone,
+    pictureUrl,
+    teachingInformation,
+    mentorSince,
+    specializations,
+  } = mentorInfoClone;
+
+  function onChange(newValue, field, categoryToDelete) {
+    setMentorInfoHasChanged(true);
+
+    switch (field) {
+      case 'description':
+        setMentorInfoClone({ ...mentorInfoClone, description: newValue });
+        break;
+      case 'undervisning':
+        setMentorInfoClone({ ...mentorInfoClone, teachingInformation: newValue });
+        break;
+      case 'categories':
+        const specializationClone = Object.assign({}, specializations);
+        delete specializationClone[categoryToDelete];
+        console.log(specializationClone);
+
+        setMentorInfoClone({
+          ...mentorInfoClone,
+          categories: newValue,
+          specializations: specializationClone,
+        });
+        break;
+      case 'specializations':
+        setMentorInfoClone({
+          ...mentorInfoClone,
+          specializations: { ...specializations, ...newValue },
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
+  function onSave() {
+    updateMentorInfoStart(currentUser.id, mentorInfoClone);
+  }
 
   return (
-    <Paper className={classes.profilePaper}>
-      <Dialog
-        fullScreen={fullScreen}
-        open={uploadPictureDialogOpen}
-        onClose={() => setUploadPictureDialogOpen(false)}
-        aria-labelledby='form-dialog-title'>
-        <DialogHeader onClose={() => setUploadPictureDialogOpen(false)} />
-        <DialogContent>
-          <UploadPicture />
-        </DialogContent>
-      </Dialog>
-
-      <Grid container>
-        <Grid item xs={12}>
-          <div className={classes.banner}>
-            <Typography variant='h3' component='h3' gutterBottom>
-              {currentUser.displayName}
-            </Typography>
-            {/* TODO - Edit categories + specialization chips*/}
-          </div>
-        </Grid>
-        <Grid item xs={4}>
-          <Card raised className={classes.mentorCard}>
-            <div style={{ display: 'flex', justifyContent: 'center', margin: '8px' }}>
-              <CardMedia>
-                {mentorSignUpInfo.profile}
+    <React.Fragment>
+      <Paper className={classes.profilePaper}>
+        <Grid container>
+          <Grid item xs={12}>
+            <MentorBanner
+              onChange={onChange}
+              categories={categories}
+              specializations={specializations}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Card raised className={classes.mentorCard}>
+              {pictureUrl ? (
+                <CardMedia className={classes.media} title='Mentor Billede'>
+                  <img
+                    alt='Mentor'
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    src={pictureUrl}
+                  />
+                  {/* mentorSignUpInfo.profile
                 <Tooltip title='Upload billede'>
                   <IconButton
                     aria-label='upload profile picture'
@@ -85,51 +126,120 @@ function MentorTeachings({ currentUser, mentorSignUpInfo }) {
                     component='span'>
                     <CloudUpload className={classes.uploadButton} />
                   </IconButton>
-                </Tooltip>
-              </CardMedia>
-            </div>
-            <CardContent>
-              <Typography gutterBottom variant='subtitle2'>
-                Mentor siden
-              </Typography>
-              <Typography gutterBottom variant='body2'>
-                -
-              </Typography>
-              <Typography variant='subtitle2' gutterBottom>
-                Sidst aktiv
-              </Typography>
-              <Typography gutterBottom variant='body2'>
-                -
-              </Typography>
-            </CardContent>
-          </Card>
+                </Tooltip> */}
+                </CardMedia>
+              ) : null}
+              <CardContent>
+                <Typography gutterBottom variant='subtitle2'>
+                  Mentor siden
+                </Typography>
+                <Typography gutterBottom variant='body2'>
+                  {mentorSince.toString()}
+                </Typography>
+                <Typography variant='subtitle2' gutterBottom>
+                  Sidst aktiv
+                </Typography>
+                <Typography gutterBottom variant='body2'>
+                  -
+                </Typography>
+                <Typography variant='subtitle2' gutterBottom>
+                  Telefon
+                </Typography>
+                <Typography gutterBottom variant='body2'>
+                  {contactPhone}
+                </Typography>
+                <Typography variant='subtitle2' gutterBottom>
+                  Email
+                </Typography>
+                <Typography gutterBottom variant='body2'>
+                  {contactEmail}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={8}>
+            <Tabs
+              value={currentTab}
+              onChange={(event, value) => setCurrentTab(value)}
+              variant='fullWidth'
+              indicatorColor='secondary'
+              textColor='secondary'
+              aria-label='icon tabs'>
+              <Tab icon={<BookIcon />} label='Undervisning' />
+              <Tab icon={<DescriptionIcon />} label='Beskrivelse' />
+            </Tabs>
+            <Box
+              p={2}
+              component='div'
+              role='tabpanel'
+              hidden={currentTab !== 0}
+              id='undervisning'
+              aria-labelledby='tab-undervisning'>
+              <EditableText
+                id='teachingInformation'
+                multiline
+                tooltipTitle='undervisnings tekst'
+                variant='body1'
+                value={description}
+                onChange={event => onChange(event.target.value, 'description')}
+              />
+            </Box>
+            <Box
+              p={2}
+              component='div'
+              role='tabpanel'
+              hidden={currentTab !== 1}
+              id='information'
+              aria-labelledby='information'>
+              <EditableText
+                id='description'
+                tooltipTitle='beskrivelses tekst'
+                multiline
+                variant='body1'
+                value={teachingInformation}
+                onChange={event => onChange(event.target.value, 'undervisning')}
+              />
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item xs={8}>
-          <Tabs
-            value={openTab}
-            onChange={(event, value) => setOpenTab(value)}
-            variant='fullWidth'
-            indicatorColor='secondary'
-            textColor='secondary'
-            aria-label='icon tabs'>
-            <Tab icon={<DescriptionIcon />} label='Beskrivelse' />
-            <Tab icon={<InfoIcon />} label='Information' />
-          </Tabs>
-          <TabPanel value={openTab} index={0}>
-            Lorem Ipsum
-          </TabPanel>
-          <TabPanel value={openTab} index={1}>
-            Lorem Ipsum 2222
-          </TabPanel>
+
+        <Dialog
+          fullScreen={fullScreen}
+          open={uploadPictureDialogOpen}
+          onClose={() => setUploadPictureDialogOpen(false)}
+          aria-labelledby='form-dialog-title'>
+          <DialogHeader onClose={() => setUploadPictureDialogOpen(false)} />
+          <DialogContent>
+            <UploadPicture />
+          </DialogContent>
+        </Dialog>
+      </Paper>
+      {mentorInfoHasChanged ? (
+        <Grid container justify='flex-end'>
+          <Button
+            onClick={onSave}
+            variant='contained'
+            color='secondary'
+            className={classes.saveIconContainer}>
+            <SaveIcon className={classes.saveIcon} />
+            Gem
+          </Button>
         </Grid>
-      </Grid>
-    </Paper>
+      ) : null}
+    </React.Fragment>
   );
 }
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  mentorInfo: selectMentorSignUpInfo,
 });
 
-export default connect(mapStateToProps)(MentorTeachings);
+const mapDispatchToProps = dispatch => ({
+  updateMentorInfoStart: (userId, updatedMentorInfo) =>
+    dispatch(updateMentorInfoStart({ userId, updatedMentorInfo })),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MentorTeachings);

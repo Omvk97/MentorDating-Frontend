@@ -9,12 +9,16 @@ import {
   signOutFailure,
   signUpSuccess,
   signUpFailure,
+  updateMentorInfoSuccess,
+  updateMentorInfoFailure,
 } from './user.actions';
 
 import { auth, googleProvider } from '../../firebase/firebase.utils.js';
 import { getCurrentUser } from '../../firebase/firestore.users';
-import { createUserProfileDocument } from '../../firebase/firestore.users';
-import { addMentorApplication } from '../../firebase/firestore.mentorApplications';
+import {
+  createUserProfileDocument,
+  updateUserMentorInfo,
+} from '../../firebase/firestore.users';
 
 export function* getSnapshotFromUserAuth(userAuth, additionalData) {
   try {
@@ -71,12 +75,13 @@ export function* signUp({ payload: { email, password, displayName } }) {
   }
 }
 
-export function* sendApplication({ payload: { userId, application } }) {
+export function* updateMentorInfo({payload: {userId, updatedMentorInfo}}) {
   try {
-    yield addMentorApplication(userId, application);
-    
+    console.log('updatedMentorInfo', updatedMentorInfo);
+    yield call(updateUserMentorInfo, userId, updatedMentorInfo);
+    yield put(updateMentorInfoSuccess(updatedMentorInfo));
   } catch (error) {
-    console.log(error);
+    yield put(updateMentorInfoFailure(error));
   }
 }
 
@@ -108,8 +113,8 @@ export function* onSignUpSuccess() {
   yield takeLatest(UserActionTypes.SIGN_UP_SUCCESS, signInAfterSignUp);
 }
 
-export function* onMentorSendApplication() {
-  yield takeLatest(UserActionTypes.SEND_MENTOR_APPLICATION, sendApplication);
+export function* onUpdateMentorInfo() {
+  yield takeLatest(UserActionTypes.UPDATE_MENTOR_INFO_START, updateMentorInfo);
 }
 
 export default function* userSagas() {
@@ -120,6 +125,6 @@ export default function* userSagas() {
     call(onSignOutStart),
     call(onSignUpStart),
     call(onSignUpSuccess),
-    call(onMentorSendApplication),
+    call(onUpdateMentorInfo),
   ]);
 }

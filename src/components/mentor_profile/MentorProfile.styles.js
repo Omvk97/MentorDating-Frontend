@@ -1,10 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(theme => ({
-  banner: {
-    padding: theme.spacing(4),
-    marginBottom: theme.spacing(3),
-    backgroundColor: '#ede7f6',
+  media: {
+    minHeight: 140,
   },
   profilePaper: {
     paddingBottom: theme.spacing(4),
@@ -43,5 +41,11 @@ export default makeStyles(theme => ({
     marginTop: theme.spacing(3),
     display: 'flex',
     justifyContent: 'flex-end',
+  },
+  saveIcon: {
+    marginRight: theme.spacing(1),
+  },
+  saveIconContainer: {
+    margin: theme.spacing(1, 0),
   },
 }));

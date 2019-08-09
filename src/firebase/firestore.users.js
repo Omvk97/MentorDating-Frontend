@@ -1,4 +1,4 @@
-import { firestore, auth } from "./firebase.utils";
+import { firestore, auth } from './firebase.utils';
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
@@ -17,11 +17,11 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
         email,
         displayName,
         createdAt,
-        role: "user", // all users start as a normal user
-        ...additionalData
+        role: 'user', // all users start as a normal user
+        ...additionalData,
       });
     } catch (error) {
-      console.log("error creating user", error.message);
+      console.log('error creating user', error.message);
     }
   }
 
@@ -37,9 +37,7 @@ export const checkIfUserExists = async email => {
   // userRef.forEach(doc => console.log(doc.data()));
 
   if (!email) return;
-  const userRef = await firestore
-    .collection("users")
-    .where("email", "==", email);
+  const userRef = await firestore.collection('users').where('email', '==', email);
   const userSnapshot = await userRef.get();
 
   return !userSnapshot.empty;
@@ -52,4 +50,12 @@ export const getCurrentUser = () => {
       resolve(userAuth);
     }, reject);
   });
+};
+
+export const updateUserMentorInfo = async (userId, updatedMentorInfo) => {
+  const mentorRef = firestore.collection('users').doc(userId);
+  console.log('MENTOREF', mentorRef);
+
+  const updatedMentor = mentorRef.update({ mentorInfo: updatedMentorInfo });
+  console.log('UPDTEDMENTOR', updatedMentor);
 };

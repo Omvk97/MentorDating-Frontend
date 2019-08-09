@@ -1,5 +1,5 @@
-import { firestore } from "./firebase.utils";
-import { createUserProfileDocument } from "./firestore.users";
+import { firestore } from './firebase.utils';
+import { createUserProfileDocument } from './firestore.users';
 
 export const createMentorProfileDoc = async (mentorAuth, mentorData) => {
   const mentorRef = firestore.doc(`mentors/${mentorAuth.uid}`);
@@ -15,7 +15,7 @@ export const createMentorProfileDoc = async (mentorAuth, mentorData) => {
           phone,
           pictureUrl,
           teachingInformation,
-          teachings
+          teachings,
         } = mentorData;
         const mentorSince = new Date();
 
@@ -26,17 +26,17 @@ export const createMentorProfileDoc = async (mentorAuth, mentorData) => {
           phone,
           pictureUrl,
           teachingInformation,
-          teachings
+          teachings,
         });
       }
     })
     .catch(error => {
-      console.log("Error creating mentor", error.message);
+      console.log('Error creating mentor', error.message);
     });
 
   const additionalData = {
     mentorInfo: mentorAuth.uid,
-    displayName
+    displayName,
   };
   createUserProfileDocument(mentorAuth, additionalData);
 
@@ -45,42 +45,48 @@ export const createMentorProfileDoc = async (mentorAuth, mentorData) => {
 
 export const createMentorProfile = async user => {
   firestore
-    .collection("mentors")
+    .collection('mentors')
     .doc(user.id)
     .set({
-      description: "descriptionTEST DEN HER BURDE VÆRE HER NU",
+      description: 'descriptionTEST DEN HER BURDE VÆRE HER NU',
       phone: 30748574,
       pictureUrl:
-        "https://bloximages.chicago2.vip.townnews.com/tribdem.com/content/tncms/assets/v3/editorial/3/83/38384be2-3ba5-11e8-adec-bf48bc62810f/5acadc92f3c7d.image.jpg?resize=400%2C357",
+        'https://bloximages.chicago2.vip.townnews.com/tribdem.com/content/tncms/assets/v3/editorial/3/83/38384be2-3ba5-11e8-adec-bf48bc62810f/5acadc92f3c7d.image.jpg?resize=400%2C357',
       mentorSince: new Date(),
-      teachingInformation: "Teaching information t",
+      teachingInformation: 'Teaching information t',
       teachings: [
         {
-          categoryName: "Software",
-          specializations: ["Test", "Test2", "Test3"]
+          categoryName: 'Software',
+          specializations: ['Test', 'Test2', 'Test3'],
         },
         {
-          categoryName: "FDKasdas",
-          specializations: ["Test4", "Test5", "Test74"]
-        }
+          categoryName: 'FDKasdas',
+          specializations: ['Test4', 'Test5', 'Test74'],
+        },
       ],
-      displayName: user.displayName
+      displayName: user.displayName,
     });
   firestore
-    .collection("users")
+    .collection('users')
     .doc(user.id)
-    .update({ role: "mentor" });
-  user.role = "mentor";
+    .update({ role: 'mentor' });
+  user.role = 'mentor';
   console.log(user);
-  
+
   return user;
 };
 
 export const fetchMentors = async () => {
-  const mentorsSnapshot = await firestore.collection("mentors").get();
+  const mentorsSnapshot = await firestore.collection('mentors').get();
 
-  return mentorsSnapshot.docs.map(doc => {
-    const mentorId = doc.id;
-    return { mentorId, ...doc.data() };
+  return mentorsSnapshot.docs.map(mentorDoc => {
+    const mentorId = mentorDoc.id;
+    return { mentorId, ...mentorDoc.data() };
   });
+};
+
+export const fetchAllCategoryOptions = async () => {
+  const categoriesSnapshot = await firestore.collection('categories').get();
+  const categoryOptions = categoriesSnapshot.docs.map(categoryDoc => categoryDoc.id);
+  return categoryOptions;
 };
