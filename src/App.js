@@ -67,7 +67,7 @@ function App({ currentUser, checkUserSession, fetchMentorsStart, fetchCategoryOp
                   currentUser ? <Redirect to='/' /> : <SignInAndSignUpPage />
                 }
               />
-              <Route path='/mentors/categories' component={CategoriesPage} />
+              <Route path='/mentorer/kategorier' component={CategoriesPage} />
               <Route path='/workshops' component={WorkshopsPage} />
               <Route path='/mentor/signup' component={MentorSignUpPage} />
               <Route path='/profil' component={ProfilePage} />

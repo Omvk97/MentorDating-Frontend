@@ -1,12 +1,14 @@
 import { firestore } from './firebase.utils';
 
 export const fetchMentors = async () => {
-  const mentorsSnapshot = await firestore.collection('mentors').get();
+  const mentorsRef = firestore.collection('users').where('role', '==', 'mentor');
 
-  return mentorsSnapshot.docs.map(mentorDoc => {
-    const mentorId = mentorDoc.id;
-    return { mentorId, ...mentorDoc.data() };
-  });
+  return mentorsRef.get().then(snapshot =>
+    snapshot.docs.map(mentorDoc => {
+      const id = mentorDoc.id;
+      return { id, ...mentorDoc.data() };
+    })
+  );
 };
 
 export const fetchAllCategoryOptions = async () => {
