@@ -11,9 +11,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import CloudUpload from '@material-ui/icons/CloudUpload';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -31,12 +28,19 @@ import DialogHeader from '../closeable_dialog_header/DialogHeader.component';
 import EditableText from '../editable_text/EditableText.component';
 import MentorBanner from './mentor_banner/MentorBanner.component';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
-import { updateMentorInfoStart } from '../../redux/user/user.actions';
+import {
+  updateMentorInfoStart,
+  temporaryMentorInfoSave,
+} from '../../redux/user/user.actions';
 
-function MentorTeachings({ currentUser, updateMentorInfoStart }) {
+function MentorTeachings({
+  currentUser,
+  updateMentorInfoStart,
+  temporaryMentorInfoSave,
+}) {
   const classes = useStyles();
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
   const [currentTab, setCurrentTab] = useState(0);
   const [uploadPictureDialogOpen, setUploadPictureDialogOpen] = useState(false);
   const [mentorInfoClone, setMentorInfoClone] = useState(null);
@@ -97,6 +101,15 @@ function MentorTeachings({ currentUser, updateMentorInfoStart }) {
     updateMentorInfoStart(currentUser.id, mentorInfoClone);
   }
 
+  function onUploadProfilePicture() {
+    temporaryMentorInfoSave(mentorInfoClone);
+    setUploadPictureDialogOpen(true);
+  }
+
+  function onUploadDialogClose() {
+    setUploadPictureDialogOpen(false);
+  }
+
   return (
     <React.Fragment>
       <Paper className={classes.profilePaper}>
@@ -112,21 +125,20 @@ function MentorTeachings({ currentUser, updateMentorInfoStart }) {
             <Card raised className={classes.mentorCard}>
               {pictureUrl ? (
                 <CardMedia className={classes.media} title='Mentor Billede'>
-                  <img
-                    alt='Mentor'
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    src={pictureUrl}
-                  />
-                  {/* mentorSignUpInfo.profile
-                <Tooltip title='Upload billede'>
-                  <IconButton
-                    aria-label='upload profile picture'
-                    color='primary'
-                    onClick={() => setUploadPictureDialogOpen(true)}
-                    component='span'>
-                    <CloudUpload className={classes.uploadButton} />
-                  </IconButton>
-                </Tooltip> */}
+                  <div className={classes.imageContainer}>
+                    <img
+                      alt='Mentor'
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      src={pictureUrl}
+                    />
+                    <Button
+                      variant='outlined'
+                      color='secondary'
+                      onClick={onUploadProfilePicture}
+                      className={classes.uploadButton}>
+                      Upload Nyt profil billede
+                    </Button>
+                  </div>
                 </CardMedia>
               ) : null}
               <CardContent>
@@ -134,7 +146,7 @@ function MentorTeachings({ currentUser, updateMentorInfoStart }) {
                   Mentor siden
                 </Typography>
                 <Typography gutterBottom variant='body2'>
-                  {mentorSince.toString()}
+                  {new Date(mentorSince.seconds * 1000).toLocaleDateString('da-DK')}
                 </Typography>
                 <Typography variant='subtitle2' gutterBottom>
                   Sidst aktiv
@@ -210,7 +222,7 @@ function MentorTeachings({ currentUser, updateMentorInfoStart }) {
           aria-labelledby='form-dialog-title'>
           <DialogHeader onClose={() => setUploadPictureDialogOpen(false)} />
           <DialogContent>
-            <UploadPicture />
+            <UploadPicture onUpload={onUploadDialogClose} />
           </DialogContent>
         </Dialog>
       </Paper>
@@ -237,6 +249,8 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = dispatch => ({
   updateMentorInfoStart: (userId, updatedMentorInfo) =>
     dispatch(updateMentorInfoStart({ userId, updatedMentorInfo })),
+  temporaryMentorInfoSave: mentorInfoClone =>
+    dispatch(temporaryMentorInfoSave(mentorInfoClone)),
 });
 
 export default connect(

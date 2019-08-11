@@ -2,15 +2,20 @@ import React, { useRef, useState } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import RotateRightIcon from '@material-ui/icons/RotateRight';
-import SaveIcon from '@material-ui/icons/Save';
+import Slider from '@material-ui/core/Slider';
+import { ThemeProvider } from '@material-ui/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+
+import useStyles from './MentorPicture.styles';
 
 function CropPicture({ files, setImage }) {
   const cropEditor = useRef(AvatarEditor);
+  const classes = useStyles();
   const [rotation, setRotation] = useState(0);
+  const [zoom, setZoom] = useState(1.2);
 
   function setEditorRef(editor) {
     if (editor) {
@@ -18,7 +23,7 @@ function CropPicture({ files, setImage }) {
     }
   }
 
-  function onCropSave() {
+  function onCropChange() {
     if (cropEditor.current) {
       cropEditor.current.getImageScaledToCanvas().toBlob(blob => {
         setImage(blob);
@@ -26,38 +31,59 @@ function CropPicture({ files, setImage }) {
     }
   }
 
+  const sliderTheme = createMuiTheme({
+    palette: {
+      primary: { main: '#4caf50' },
+    },
+  });
+
   return (
-    <Grid container spacing={4}>
+    <React.Fragment>
       <Grid item xs={12}>
-        <Paper>
+        <div className={classes.cropper}>
           <AvatarEditor
             ref={setEditorRef}
             image={files[0].preview}
             border={50}
-            color={[88, 88, 88, 0.6]} // RGBA
-            scale={1.2}
+            color={[88, 88, 88, 0.6]}
+            scale={zoom}
             rotate={rotation}
+            onImageChange={() => onCropChange()}
+            onLoadSuccess={() => onCropChange()}
           />
-        </Paper>
+        </div>
       </Grid>
-      <Paper>
-        <Grid item xs={3}>
-          <IconButton variant='contained' color='secondary' onClick={() => setRotation(rotation - 90)}>
-            <RotateLeftIcon />
-          </IconButton>
+      <Grid container justify='center'>
+        <Grid item xs={6}>
+          <ThemeProvider theme={sliderTheme}>
+            <Slider
+              defaultValue={zoom}
+              aria-labelledby='zoom slider'
+              valueLabelDisplay='auto'
+              step={0.2}
+              marks
+              min={1}
+              max={5}
+              onChange={(event, newValue) => setZoom(newValue)}
+            />
+          </ThemeProvider>
         </Grid>
-        <Grid item xs={3}>
-          <IconButton variant='contained' color='secondary' onClick={() => setRotation(rotation + 90)}>
-            <RotateRightIcon />
-          </IconButton>
-        </Grid>
-        <Grid item xs={3}>
-          <IconButton variant='contained' color='secondary' onClick={onCropSave}>
-            <SaveIcon />
-          </IconButton>
-        </Grid>
-      </Paper>
-    </Grid>
+      </Grid>
+      <Grid item container justify='center'>
+        <IconButton
+          variant='contained'
+          color='secondary'
+          onClick={() => setRotation(rotation - 90)}>
+          <RotateLeftIcon />
+        </IconButton>
+        <IconButton
+          variant='contained'
+          color='secondary'
+          onClick={() => setRotation(rotation + 90)}>
+          <RotateRightIcon />
+        </IconButton>
+      </Grid>
+    </React.Fragment>
   );
 }
 

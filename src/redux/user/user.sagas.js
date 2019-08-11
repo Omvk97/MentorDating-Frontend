@@ -11,6 +11,8 @@ import {
   signUpFailure,
   updateMentorInfoSuccess,
   updateMentorInfoFailure,
+  setMentorPictureSuccess,
+  setMentorPictureFailure,
 } from './user.actions';
 
 import { auth, googleProvider } from '../../firebase/firebase.utils.js';
@@ -18,6 +20,7 @@ import { getCurrentUser } from '../../firebase/firestore.users';
 import {
   createUserProfileDocument,
   updateUserMentorInfo,
+  setUserPicture,
 } from '../../firebase/firestore.users';
 
 export function* getSnapshotFromUserAuth(userAuth, additionalData) {
@@ -75,13 +78,21 @@ export function* signUp({ payload: { email, password, displayName } }) {
   }
 }
 
-export function* updateMentorInfo({payload: {userId, updatedMentorInfo}}) {
+export function* updateMentorInfo({ payload: { userId, updatedMentorInfo } }) {
   try {
     console.log('updatedMentorInfo', updatedMentorInfo);
     yield call(updateUserMentorInfo, userId, updatedMentorInfo);
     yield put(updateMentorInfoSuccess(updatedMentorInfo));
   } catch (error) {
     yield put(updateMentorInfoFailure(error));
+  }
+}
+export function* uploadMentorPicture({ payload: { userId, pictureBlob } }) {
+  try {
+    const downloadUrl = yield call(setUserPicture, userId, pictureBlob);
+    yield put(setMentorPictureSuccess(downloadUrl));
+  } catch (error) {
+    yield put(setMentorPictureFailure(error));
   }
 }
 
@@ -117,6 +128,10 @@ export function* onUpdateMentorInfo() {
   yield takeLatest(UserActionTypes.UPDATE_MENTOR_INFO_START, updateMentorInfo);
 }
 
+export function* onSetMentorPicture() {
+  yield takeLatest(UserActionTypes.SET_MENTOR_PICTURE_START, uploadMentorPicture);
+}
+
 export default function* userSagas() {
   yield all([
     call(onGoogleSignInStart),
@@ -126,5 +141,6 @@ export default function* userSagas() {
     call(onSignUpStart),
     call(onSignUpSuccess),
     call(onUpdateMentorInfo),
+    call(onSetMentorPicture),
   ]);
 }

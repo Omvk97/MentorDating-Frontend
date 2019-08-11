@@ -12,7 +12,6 @@ import {
 import { emailSignInStart } from '../user/user.actions';
 import {
   fetchMentors,
-  createMentorProfile,
   fetchAllCategoryOptions,
 } from '../../firebase/firestore.mentors';
 import { addMentorApplication } from '../../firebase/firestore.mentorApplications';
@@ -23,16 +22,6 @@ export function* fetchMentorsAsync() {
     yield put(fetchMentorsSuccess(mentors));
   } catch (error) {
     yield put(fetchMentorsFailure(error.message));
-  }
-}
-
-
-export function* signUpMentor({ payload: user }) {
-  try {
-    user = yield call(createMentorProfile, user);
-    yield put(signUpMentorSuccess(user));
-  } catch (error) {  
-    yield put(signUpMentorFailure(error.message));
   }
 }
 
@@ -60,9 +49,6 @@ export function* fetchCategoryOptions() {
 export function* onFetchMentorsStart() {
   yield takeLatest(MentorActionTypes.FETCH_MENTORS_START, fetchMentorsAsync);
 }
-export function* onSignUpMentorStart() {
-  yield takeLatest(MentorActionTypes.SIGN_UP_MENTOR_START, signUpMentor);
-}
 export function* onSignUpMentorSuccess() {
   yield takeLatest(MentorActionTypes.SIGN_UP_MENTOR_SUCCESS, signInMentor);
 }
@@ -76,7 +62,6 @@ export function* onFetchCategoryOptionsStart() {
 export default function* mentorSagas() {
   yield all([
     call(onFetchMentorsStart),
-    call(onSignUpMentorStart),
     call(onMentorSendApplication),
     call(onFetchCategoryOptionsStart),
   ]);

@@ -16,3 +16,13 @@ export const selectIsUserAMentor = createSelector(
   [selectUserState],
   user => user.isUserMentor
 );
+
+export const selectPictureUploadedSuccess = createSelector(
+  [selectUserState],
+  user => user.pictureUploadedSuccess
+);
+
+export const selectPictureUploading = createSelector(
+  [selectUserState],
+  user => user.pictureUploading
+);

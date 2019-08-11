@@ -22,7 +22,6 @@ const mentorReducer = (state = INITIAL_STATE, action) => {
         isFetching: false,
       };
     case MentorActionTypes.FETCH_MENTORS_FAILURE:
-    case MentorActionTypes.SIGN_UP_MENTOR_FAILURE:
     case MentorActionTypes.FETCH_CATEGORY_OPTIONS_FAILURE:
       return {
         ...state,

@@ -1,4 +1,4 @@
-import { firestore, auth } from './firebase.utils';
+import { firestore, auth, firebaseStorageRef } from './firebase.utils';
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
@@ -54,8 +54,21 @@ export const getCurrentUser = () => {
 
 export const updateUserMentorInfo = async (userId, updatedMentorInfo) => {
   const mentorRef = firestore.collection('users').doc(userId);
-  console.log('MENTOREF', mentorRef);
+  mentorRef.update({ mentorInfo: { ...updatedMentorInfo } });
+};
 
-  const updatedMentor = mentorRef.update({ mentorInfo: updatedMentorInfo });
-  console.log('UPDTEDMENTOR', updatedMentor);
+export const setUserPicture = async (userId, pictureBlob) => {
+  let pictureDownloadUrl;
+  await firebaseStorageRef
+    .child(`mentorPictures/${userId}`)
+    .put(pictureBlob)
+    .then(snapshot => snapshot.ref.getDownloadURL())
+    .then(downloadUrl => {
+      pictureDownloadUrl = downloadUrl;
+      firestore
+        .collection('users')
+        .doc(userId)
+        .update({ 'mentorInfo.pictureUrl': downloadUrl });
+    });
+  return pictureDownloadUrl;
 };

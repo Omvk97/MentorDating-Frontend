@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import CloudUpload from '@material-ui/icons/CloudUpload';
 import IconButton from '@material-ui/core/IconButton';
 
-import useStyles from '../MentorProfile.styles';
+import useStyles from './MentorPicture.styles';
 import Typography from '@material-ui/core/Typography';
 
 function UploadPicture({ setFiles }) {
@@ -22,16 +22,21 @@ function UploadPicture({ setFiles }) {
     [setFiles]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false, accept: 'image/*' });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+    accept: 'image/*',
+  });
 
   return (
-    <div className={classes.profilePicture}>
-      <div {...getRootProps()} className={`${classes.dropzone} ${isDragActive ? classes.dropzoneActive : null}`}>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div
+        {...getRootProps()}
+        className={`${classes.dropzone} ${isDragActive ? classes.dropzoneActive : null}`}>
         <input {...getInputProps()} />
         <IconButton
           aria-label='upload profile picture'
-          color='primary'
-          htmlFor={'upload-profile-image'}
+          color='secondary'
           component='span'>
           <CloudUpload className={classes.uploadButton} />
         </IconButton>

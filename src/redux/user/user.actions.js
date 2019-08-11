@@ -52,3 +52,19 @@ export const updateMentorInfoFailure = error => ({
   type: UserActionTypes.UPDATE_MENTOR_INFO_FAILURE,
   payload: error,
 });
+export const setMentorPictureStart = userIdAndPictureBlob => ({
+  type: UserActionTypes.SET_MENTOR_PICTURE_START,
+  payload: userIdAndPictureBlob,
+});
+export const setMentorPictureSuccess = pictureUrl => ({
+  type: UserActionTypes.SET_MENTOR_PICTURE_SUCCESS,
+  payload: pictureUrl,
+});
+export const setMentorPictureFailure = error => ({
+  type: UserActionTypes.SET_MENTOR_PICTURE_FAILURE,
+  payload: error,
+});
+export const temporaryMentorInfoSave = mentorInfoClone => ({
+  type: UserActionTypes.TEMPORARY_MENTOR_INFO_SAVE,
+  payload: mentorInfoClone,
+});

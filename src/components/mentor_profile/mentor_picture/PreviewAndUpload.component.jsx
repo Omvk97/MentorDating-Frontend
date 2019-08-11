@@ -1,32 +1,23 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
+import React, { useEffect } from 'react';
 
-import Button from '@material-ui/core/Button';
 
-import { storageRef } from '../../../firebase/firebase.utils';
-
-import { selectCurrentUser } from '../../../redux/user/user.selectors';
-
-function PreviewAndUpload({ pictureBlob, currentUser }) {
-    console.log(currentUser);
-    
-  function uploadImage() {
-    const imageRef = storageRef.child(`mentorPictures/${currentUser.id}`);
-    imageRef
-      .put(pictureBlob)
-      .then(response => imageRef.getDownloadURL().then(response2 => console.log('downloadImage', response2)));
-  }
+function PreviewAndUpload({ pictureBlob }) {
+  const picturePreview = URL.createObjectURL(pictureBlob);
+  useEffect(() => {
+    return () => {
+      URL.revokeObjectURL(picturePreview);
+    };
+  }, [picturePreview]);
 
   return (
-    <Button variant='contained' onClick={uploadImage}>
-      Upload
-    </Button>
+    <div style={{ textAlign: 'center' }}>
+      <img
+        style={{ width: '85%', height: '85%', objectFit: 'cover' }}
+        src={picturePreview}
+        alt='Billede forevisning'
+      />
+    </div>
   );
 }
 
-const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-});
-
-export default connect(mapStateToProps)(PreviewAndUpload);
+export default PreviewAndUpload;

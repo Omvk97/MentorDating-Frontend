@@ -28,27 +28,9 @@ export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => 
   return await batch.commit();
 };
 
-// export const convertCollectionsSnapshotToMap = collections => {
-//   const transformedCollection = collections.docs.map(doc => {
-//     const { title, items } = doc.data();
-
-//     return {
-//       routeName: encodeURI(title.toLowerCase()),
-//       id: doc.id,
-//       title,
-//       items
-//     };
-//   });
-
-//   return transformedCollection.reduce((accumulator, collection) => {
-//     accumulator[collection.title.toLowerCase()] = collection;
-//     return accumulator;
-//   }, {});
-// };
-
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
-export const storageRef = firebase.storage().ref();
+export const firebaseStorageRef = firebase.storage().ref();
 
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
