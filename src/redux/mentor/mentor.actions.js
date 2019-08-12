@@ -38,3 +38,15 @@ export const fetchCategoryOptionsFailure = errorMessage => ({
   type: MentorActionTypes.FETCH_CATEGORY_OPTIONS_FAILURE,
   payload: errorMessage,
 });
+export const fetchMentorsWithCategoryStart = category => ({
+  type: MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_START,
+  payload: category,
+});
+export const fetchMentorsWithCategorySuccess = mentors => ({
+  type: MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_SUCCESS,
+  payload: mentors,
+});
+export const fetchMentorsWithCategoryFailure = error => ({
+  type: MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_FAILURE,
+  payload: error,
+});

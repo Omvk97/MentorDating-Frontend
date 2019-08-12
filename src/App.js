@@ -32,6 +32,9 @@ const MentorSignUpPage = lazy(() =>
   import('./pages/mentor_sign_up_page/MentorSignUp.page')
 );
 const ProfilePage = lazy(() => import('./pages/profile_page/Profile.page'));
+const MentorDetailsPage = lazy(() =>
+  import('./pages/mentor_details_page/MentorDetails.page')
+);
 
 const theme = createMuiTheme({
   palette: {
@@ -41,7 +44,12 @@ const theme = createMuiTheme({
   },
 });
 
-function App({ currentUser, checkUserSession, fetchMentorsStart, fetchCategoryOptionsStart }) {
+function App({
+  currentUser,
+  checkUserSession,
+  fetchMentorsStart,
+  fetchCategoryOptionsStart,
+}) {
   const classes = useStyles();
 
   useEffect(() => {
@@ -67,10 +75,11 @@ function App({ currentUser, checkUserSession, fetchMentorsStart, fetchCategoryOp
                   currentUser ? <Redirect to='/' /> : <SignInAndSignUpPage />
                 }
               />
-              <Route path='/mentorer/kategorier' component={CategoriesPage} />
+              <Route path='/mentorer/kategorier/:categoryName' component={CategoriesPage} />
               <Route path='/workshops' component={WorkshopsPage} />
               <Route path='/mentor/signup' component={MentorSignUpPage} />
               <Route path='/profil' component={ProfilePage} />
+              <Route path='/mentor/:mentorId' component={MentorDetailsPage} />
             </ErrorBoundary>
           </Container>
           <Footer />

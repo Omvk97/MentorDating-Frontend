@@ -5,6 +5,8 @@ const INITIAL_STATE = {
   isFetching: false, // SHould maybe make another isFetching for categoryOptions (isFetchingMentors & isFetchingCategoryOptions)
   errorMessage: null,
   categoryOptions: [],
+  mentorsWithCategory: [],
+  isFetchingMentorsWithCategory: false,
 };
 
 const mentorReducer = (state = INITIAL_STATE, action) => {
@@ -23,6 +25,7 @@ const mentorReducer = (state = INITIAL_STATE, action) => {
       };
     case MentorActionTypes.FETCH_MENTORS_FAILURE:
     case MentorActionTypes.FETCH_CATEGORY_OPTIONS_FAILURE:
+    case MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_FAILURE:
       return {
         ...state,
         isFetching: false,
@@ -33,6 +36,17 @@ const mentorReducer = (state = INITIAL_STATE, action) => {
         ...state,
         isFetching: false,
         categoryOptions: action.payload,
+      };
+    case MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_START:
+      return {
+        ...state,
+        isFetchingMentorsWithCategory: true,
+      };
+    case MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        isFetchingMentorsWithCategory: false,
+        mentorsWithCategory: action.payload,
       };
     default:
       return state;

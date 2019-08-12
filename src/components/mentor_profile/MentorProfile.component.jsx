@@ -14,13 +14,12 @@ import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 import BookIcon from '@material-ui/icons/Book';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SaveIcon from '@material-ui/icons/Save';
-
-import { useTheme } from '@material-ui/core/styles';
 
 import useStyles from './MentorProfile.styles';
 import UploadPicture from './mentor_picture/UploadPicture.component';
@@ -98,6 +97,7 @@ function MentorTeachings({
   }
 
   function onSave() {
+    setMentorInfoHasChanged(false);
     updateMentorInfoStart(currentUser.id, mentorInfoClone);
   }
 

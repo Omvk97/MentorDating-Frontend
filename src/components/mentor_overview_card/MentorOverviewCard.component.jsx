@@ -5,53 +5,54 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 
 import useStyles from './MentorOverviewCard.styles';
+import ImageLoader from '../image_loader/ImageLoader.component';
 
 function MentorOverviewCard({
   mentor: {
     id,
     displayName,
-    mentorInfo: { specializations, pictureUrl },
+    mentorInfo: { categories, specializations, pictureUrl },
   },
   history,
 }) {
   const classes = useStyles();
   return (
-    <Card raised className={classes.card} onClick={() => history.push(`mentorer/mentor/${id}`)}>
+    <Card
+      raised
+      className={classes.card}
+      onClick={() => history.push(`/mentor/${id}/${displayName}`)}>
       <CardActionArea>
         <CardMedia>
-          <img
-            alt='Mentor'
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            src={pictureUrl}
-          />
+          <ImageLoader src={pictureUrl} />
         </CardMedia>
         <CardContent>
           <Typography gutterBottom variant='h5' component='h2'>
             {displayName}
           </Typography>
-          {specializations ? (
+          {categories ? (
             <React.Fragment>
-              {Object.keys(specializations).map((key, index) => (
-                <React.Fragment>
+              {categories.map(category => (
+                <React.Fragment key={category}>
                   <div>
-                    <Typography variant='subtitle2'>{key}:</Typography>
+                    <Typography variant='subtitle2'>{category}</Typography>
                   </div>
                   <div>
-                    {specializations[key].map(spec => (
-                      <Chip
-                        key={spec}
-                        className={classes.specializationChip}
-                        label={spec}
-                        color='primary'
-                        size='small'
-                        variant='outlined'
-                      />
-                    ))}
+                    {specializations[category]
+                      ? specializations[category].map(spec => (
+                          <Chip
+                            key={spec}
+                            className={classes.specializationChip}
+                            label={spec}
+                            color='primary'
+                            size='small'
+                            variant='outlined'
+                          />
+                        ))
+                      : null}
                   </div>
                 </React.Fragment>
               ))}

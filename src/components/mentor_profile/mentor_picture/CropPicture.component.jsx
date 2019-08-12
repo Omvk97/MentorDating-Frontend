@@ -45,6 +45,8 @@ function CropPicture({ files, setImage }) {
             ref={setEditorRef}
             image={files[0].preview}
             border={50}
+            width={300}
+            height={300}
             color={[88, 88, 88, 0.6]}
             scale={zoom}
             rotate={rotation}

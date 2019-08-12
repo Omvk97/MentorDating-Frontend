@@ -1,5 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -8,17 +10,25 @@ import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Collapse from '@material-ui/core/Collapse';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import MentorIcon from '@material-ui/icons/SupervisedUserCircle';
 import WorkshopIcon from '@material-ui/icons/School';
 
 import useStyles from './Drawer.styles';
+import { selectCategoryOptions } from '../../../redux/mentor/mentor.selectors';
 
-function SideDrawer({ open, onDrawerClose, history }) {
+function SideDrawer({ open, onDrawerClose, history, categoryOptions }) {
   const classes = useStyles();
+  const [categoriesOpen, setCategoriesOpen] = React.useState(false);
+
+  function onCategoriesClick(category) {
+    onDrawerClose();
+    history.push(`/mentorer/kategorier/${category}`);
+  }
 
   return (
     <Drawer
@@ -37,17 +47,26 @@ function SideDrawer({ open, onDrawerClose, history }) {
       </div>
       <Divider />
       <List>
-        <ListItem button onClick={() => history.push('/mentorer/kategorier')}>
+        <ListItem button onClick={() => setCategoriesOpen(!categoriesOpen)}>
           <ListItemIcon>
             <MentorIcon />
           </ListItemIcon>
           <ListItemText primary='Kategorier' />
-          <ListItemSecondaryAction>
-            <IconButton edge='end' aria-label='specify category'>
-              <ChevronRightIcon />
-            </IconButton>
-          </ListItemSecondaryAction>
+          {categoriesOpen ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
+        <Collapse in={categoriesOpen} timeout='auto' unmountOnExit>
+          <List component='div' disablePadding>
+            {categoryOptions.map(category => (
+              <ListItem
+                key={category}
+                button
+                className={classes.nestedListItem}
+                onClick={() => onCategoriesClick(category)}>
+                <ListItemText primary={category} />
+              </ListItem>
+            ))}
+          </List>
+        </Collapse>
         <ListItem button onClick={() => history.push('/mentors/workshops')}>
           <ListItemIcon>
             <WorkshopIcon />
@@ -59,4 +78,8 @@ function SideDrawer({ open, onDrawerClose, history }) {
   );
 }
 
-export default withRouter(SideDrawer);
+const mapStateToProps = createStructuredSelector({
+  categoryOptions: selectCategoryOptions,
+});
+
+export default withRouter(connect(mapStateToProps)(SideDrawer));

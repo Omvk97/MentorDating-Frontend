@@ -31,8 +31,8 @@ function CategorySpecializations({ specializations, category, onChange, onDelete
   }
 
   function onChipAdd() {
-    if (newSpecializationText.length < 3) {
-      setSpecializationTextError('Min. 3 karakterer');
+    if (newSpecializationText.length === 0) {
+      setSpecializationTextError('Min. et bogstav');
       return;
     }
     if (!specializations) specializations = [];
