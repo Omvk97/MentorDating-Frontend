@@ -35,7 +35,7 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function Profile({ currentUser }) {
+function Profile({ currentUser, history }) {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = React.useState(0);
 
@@ -65,7 +65,9 @@ function Profile({ currentUser }) {
           hidden={currentTab !== 0}
           id={'generelt'}
           aria-labelledby={'generelt'}>
-          <Typography variant='h6'>TODO - Skifte email og telefonnummer og anmode om at skifte navn</Typography>
+          <Typography variant='h6'>
+            TODO - Skifte email og telefonnummer og anmode om at skifte navn
+          </Typography>
         </Box>
         <Box
           p={3}
@@ -75,7 +77,8 @@ function Profile({ currentUser }) {
           id={'sikkerhedOgLogin'}
           aria-labelledby={'sikkerhed og login'}>
           <Typography variant='h6'>
-            TODO - Skifte kodeord og sætte to-trins bekræftelse + sende email verificering igen
+            TODO - Skifte kodeord og sætte to-trins bekræftelse + sende email verificering
+            igen
           </Typography>
         </Box>
         <Box
@@ -85,7 +88,7 @@ function Profile({ currentUser }) {
           hidden={currentTab !== 2}
           id={'mentorside'}
           aria-labelledby={'mentorside'}>
-          <MentorProfile />
+          <MentorProfile switchTab={handleChange} />
         </Box>
       </Grid>
     </Grid>

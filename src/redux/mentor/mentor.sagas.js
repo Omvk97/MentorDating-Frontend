@@ -1,4 +1,4 @@
-import { takeLatest, put, all, call } from 'redux-saga/effects';
+import { takeLatest, put, all, call, take } from 'redux-saga/effects';
 
 import MentorActionTypes from './mentor.types';
 import {
@@ -6,23 +6,29 @@ import {
   fetchMentorsFailure,
   fetchCategoryOptionsSuccess,
   fetchCategoryOptionsFailure,
-  fetchMentorsWithCategorySuccess,
-  fetchMentorsWithCategoryFailure,
 } from './mentor.actions';
 import { emailSignInStart } from '../user/user.actions';
 import {
-  fetchMentors,
   fetchAllCategoryOptions,
-  fetchMentorsWtihCategory,
 } from '../../firebase/firestore.mentors';
 import { addMentorApplication } from '../../firebase/firestore.mentorApplications';
+import { firestore } from '../../firebase/firebase.utils';
+import { eventChannel } from 'redux-saga';
 
-export function* fetchMentorsAsync() {
+export function* fetchMentorsListener() {
+  const mentorsRef = firestore.collection('users').where('role', '==', 'mentor');
+  const channel = eventChannel(emit => mentorsRef.onSnapshot(emit));
   try {
-    const mentors = yield fetchMentors();
-    yield put(fetchMentorsSuccess(mentors));
+    while (true) {
+      const data = yield take(channel);
+      let mentors = [];
+      data.forEach(function(document) {
+        mentors.push({ id: document.id, ...document.data() });
+      });
+      yield put(fetchMentorsSuccess(mentors))
+    }
   } catch (error) {
-    yield put(fetchMentorsFailure(error.message));
+    yield put(fetchMentorsFailure(error));
   }
 }
 
@@ -47,17 +53,8 @@ export function* fetchCategoryOptions() {
   }
 }
 
-export function* fetchMentorsWithCategory({ payload: category }) {
-  try {
-    const mentors = yield fetchMentorsWtihCategory(category);
-    yield put(fetchMentorsWithCategorySuccess(mentors));
-  } catch (error) {
-    yield put(fetchMentorsWithCategoryFailure(error));
-  }
-}
-
 export function* onFetchMentorsStart() {
-  yield takeLatest(MentorActionTypes.FETCH_MENTORS_START, fetchMentorsAsync);
+  yield takeLatest(MentorActionTypes.FETCH_MENTORS_START, fetchMentorsListener);
 }
 export function* onSignUpMentorSuccess() {
   yield takeLatest(MentorActionTypes.SIGN_UP_MENTOR_SUCCESS, signInMentor);
@@ -68,18 +65,11 @@ export function* onMentorSendApplication() {
 export function* onFetchCategoryOptionsStart() {
   yield takeLatest(MentorActionTypes.FETCH_CATEGORY_OPTIONS_START, fetchCategoryOptions);
 }
-export function* onFetchMentorsWithCategoryStart() {
-  yield takeLatest(
-    MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_START,
-    fetchMentorsWithCategory
-  );
-}
 
 export default function* mentorSagas() {
   yield all([
     call(onFetchMentorsStart),
     call(onMentorSendApplication),
     call(onFetchCategoryOptionsStart),
-    call(onFetchMentorsWithCategoryStart),
   ]);
 }

@@ -45,7 +45,7 @@ function EditableText({
     setEditable(!editable);
   }
   return (
-    <div>
+    <div style={{overflowWrap: 'break-word'}}>
       <Grid item xs={12}>
         {editable ? (
           <TextField

@@ -38,7 +38,8 @@ function MentorDetails({ match, mentors }) {
     specializations,
   } = mentor.mentorInfo;
   const { displayName } = mentor;
-  
+  console.log(description);
+
   return (
     <Paper className={classes.profilePaper}>
       <Grid container spacing={2}>
@@ -123,7 +124,7 @@ function MentorDetails({ match, mentors }) {
             hidden={currentTab !== 0}
             id='undervisning'
             aria-labelledby='tab-undervisning'>
-            <Typography variant='body1'>{description}</Typography>
+            <Typography variant='body1' style={{overflowWrap: 'break-word'}}>{description}</Typography>
           </Box>
           <Box
             p={2}

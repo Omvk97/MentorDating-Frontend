@@ -11,18 +11,6 @@ export const fetchMentorsFailure = error => ({
   type: MentorActionTypes.FETCH_MENTORS_FAILURE,
   payload: error,
 });
-export const signUpMentorStart = user => ({
-  type: MentorActionTypes.SIGN_UP_MENTOR_START,
-  payload: user,
-});
-export const signUpMentorSuccess = user => ({
-  type: MentorActionTypes.SIGN_UP_MENTOR_SUCCESS,
-  payload: user,
-});
-export const signUpMentorFailure = error => ({
-  type: MentorActionTypes.SIGN_UP_MENTOR_FAILURE,
-  payload: error,
-});
 export const sendMentorApplication = application => ({
   type: MentorActionTypes.SEND_MENTOR_APPLICATION,
   payload: application,
@@ -37,16 +25,4 @@ export const fetchCategoryOptionsSuccess = categories => ({
 export const fetchCategoryOptionsFailure = errorMessage => ({
   type: MentorActionTypes.FETCH_CATEGORY_OPTIONS_FAILURE,
   payload: errorMessage,
-});
-export const fetchMentorsWithCategoryStart = category => ({
-  type: MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_START,
-  payload: category,
-});
-export const fetchMentorsWithCategorySuccess = mentors => ({
-  type: MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_SUCCESS,
-  payload: mentors,
-});
-export const fetchMentorsWithCategoryFailure = error => ({
-  type: MentorActionTypes.FETCH_MENTORS_WITH_CATEGORY_FAILURE,
-  payload: error,
 });

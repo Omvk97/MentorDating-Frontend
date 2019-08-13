@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
+import { Prompt } from 'react-router-dom';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -36,6 +37,7 @@ function MentorTeachings({
   currentUser,
   updateMentorInfoStart,
   temporaryMentorInfoSave,
+  switchTab,
 }) {
   const classes = useStyles();
   const theme = useTheme();
@@ -49,7 +51,6 @@ function MentorTeachings({
     if (currentUser) {
       setMentorInfoClone(Object.assign({}, currentUser.mentorInfo));
     }
-    return () => {};
   }, [currentUser]);
 
   if (!currentUser || !mentorInfoClone) return null;
@@ -112,6 +113,10 @@ function MentorTeachings({
 
   return (
     <React.Fragment>
+      <Prompt
+        when={mentorInfoHasChanged}
+        message='Du har ændringer som endnu ikke er gemt, er du sikker på du vil forlade siden?'
+      />
       <Paper className={classes.profilePaper}>
         <Grid container>
           <Grid item xs={12}>
@@ -219,7 +224,7 @@ function MentorTeachings({
           fullScreen={fullScreen}
           open={uploadPictureDialogOpen}
           onClose={() => setUploadPictureDialogOpen(false)}
-          aria-labelledby='form-dialog-title'>
+          aria-labelledby='upload billede'>
           <DialogHeader onClose={() => setUploadPictureDialogOpen(false)} />
           <DialogContent>
             <UploadPicture onUpload={onUploadDialogClose} />
