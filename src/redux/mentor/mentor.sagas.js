@@ -8,16 +8,17 @@ import {
   fetchCategoryOptionsFailure,
 } from './mentor.actions';
 import { emailSignInStart } from '../user/user.actions';
-import {
-  fetchAllCategoryOptions,
-} from '../../firebase/firestore.mentors';
+import { fetchAllCategoryOptions } from '../../firebase/firestore.mentors';
 import { addMentorApplication } from '../../firebase/firestore.mentorApplications';
 import { firestore } from '../../firebase/firebase.utils';
 import { eventChannel } from 'redux-saga';
 
 export function* fetchMentorsListener() {
   const mentorsRef = firestore.collection('users').where('role', '==', 'mentor');
-  const channel = eventChannel(emit => mentorsRef.onSnapshot(emit));
+  const channel = eventChannel(emit => {
+    const unsubscribe = mentorsRef.onSnapshot(emit);
+    return () => unsubscribe();
+  });
   try {
     while (true) {
       const data = yield take(channel);
@@ -25,7 +26,7 @@ export function* fetchMentorsListener() {
       data.forEach(function(document) {
         mentors.push({ id: document.id, ...document.data() });
       });
-      yield put(fetchMentorsSuccess(mentors))
+      yield put(fetchMentorsSuccess(mentors));
     }
   } catch (error) {
     yield put(fetchMentorsFailure(error));

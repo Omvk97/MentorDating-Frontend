@@ -38,7 +38,6 @@ function MentorDetails({ match, mentors }) {
     specializations,
   } = mentor.mentorInfo;
   const { displayName } = mentor;
-  console.log(description);
 
   return (
     <Paper className={classes.profilePaper}>

@@ -56,7 +56,11 @@ function Header({ currentUser, signOutStart }) {
             onClick={() => setSideDrawerOpen(true)}>
             <MenuIcon />
           </IconButton>
-          <Typography component={RouterLink} to='/' variant='h6' className={classes.title}>
+          <Typography
+            component={RouterLink}
+            to='/'
+            variant='h6'
+            className={classes.title}>
             MentorDating
           </Typography>
           <div className={classes.search}>
@@ -81,7 +85,9 @@ function Header({ currentUser, signOutStart }) {
                 onClick={event => setAnchorEl(event.currentTarget)}
                 color='inherit'>
                 <Badge badgeContent={99} color='error'>
-                  <Avatar className={classes.avatar}>{currentUser.displayName.charAt(0)}</Avatar>
+                  <Avatar className={classes.avatar}>
+                    {currentUser.displayName.charAt(0)}
+                  </Avatar>
                 </Badge>
               </IconButton>
               <Menu
@@ -104,7 +110,10 @@ function Header({ currentUser, signOutStart }) {
                   </ListItemIcon>
                   <ListItemText primary='Rediger profil' />
                 </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
+                <MenuItem
+                  component={RouterLink}
+                  to='/beskeder'
+                  onClick={handleMenuClose}>
                   <ListItemIcon>
                     <Badge badgeContent={99} color='error'>
                       <MessageIcon />
@@ -122,13 +131,20 @@ function Header({ currentUser, signOutStart }) {
               </Menu>
             </div>
           ) : (
-            <Button component={RouterLink} to='/logind' color='inherit' className={classes.logInButton}>
+            <Button
+              component={RouterLink}
+              to='/logind'
+              color='inherit'
+              className={classes.logInButton}>
               LOG IND
             </Button>
           )}
         </Toolbar>
       </AppBar>
-      <SideDrawer open={sideDrawerOpen} onDrawerClose={() => setSideDrawerOpen(false)} />
+      <SideDrawer
+        open={sideDrawerOpen}
+        onDrawerClose={() => setSideDrawerOpen(false)}
+      />
     </div>
   );
 }

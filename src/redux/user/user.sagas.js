@@ -80,7 +80,6 @@ export function* signUp({ payload: { email, password, displayName } }) {
 
 export function* updateMentorInfo({ payload: { userId, updatedMentorInfo } }) {
   try {
-    console.log('updatedMentorInfo', updatedMentorInfo);
     yield call(updateUserMentorInfo, userId, updatedMentorInfo);
     yield put(updateMentorInfoSuccess(updatedMentorInfo));
   } catch (error) {

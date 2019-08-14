@@ -5,8 +5,6 @@ const INITIAL_STATE = {
   isFetching: false, // SHould maybe make another isFetching for categoryOptions (isFetchingMentors & isFetchingCategoryOptions)
   errorMessage: null,
   categoryOptions: [],
-  mentorsWithCategory: [],
-  isFetchingMentorsWithCategory: false,
 };
 
 const mentorReducer = (state = INITIAL_STATE, action) => {

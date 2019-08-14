@@ -35,6 +35,7 @@ const ProfilePage = lazy(() => import('./pages/profile_page/Profile.page'));
 const MentorDetailsPage = lazy(() =>
   import('./pages/mentor_details_page/MentorDetails.page')
 );
+const ConversationsPage = lazy(() => import('./pages/conversations_page/Conversations.page'))
 
 const theme = createMuiTheme({
   palette: {
@@ -80,6 +81,7 @@ function App({
               <Route path='/mentor/signup' component={MentorSignUpPage} />
               <Route path='/profil' component={ProfilePage} />
               <Route path='/mentor/:mentorId' component={MentorDetailsPage} />
+              <Route path='/beskeder' component={ConversationsPage} />
             </ErrorBoundary>
           </Container>
           <Footer />

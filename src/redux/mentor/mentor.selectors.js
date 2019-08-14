@@ -16,13 +16,3 @@ export const selectCategoryOptions = createSelector(
   [selectMentorState],
   mentor => mentor.categoryOptions
 );
-
-export const selectMentorsWithCategory = createSelector(
-  [selectMentorState],
-  mentor => mentor.mentorsWithCategory
-);
-
-export const selectIsFetchingMentorsWithCategory = createSelector(
-  [selectMentorState],
-  mentor => mentor.isFetchingMentorsWithCategory
-);

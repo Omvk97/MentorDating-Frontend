@@ -8,8 +8,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   const snapShot = await userRef.get();
 
   if (!snapShot.exists) {
-    const { email } = userAuth;
-    const { displayName } = additionalData;
+    const { email, displayName } = userAuth;
     const createdAt = new Date();
 
     try {
@@ -25,7 +24,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     }
   }
 
-  return snapShot;
+  return await userRef.get();
 };
 
 export const checkIfUserExists = async email => {
