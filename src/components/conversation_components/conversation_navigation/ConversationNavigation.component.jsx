@@ -7,10 +7,15 @@ import Tab from '@material-ui/core/Tab';
 import { selectCurrentUser } from '../../../redux/user/user.selectors';
 
 function ConversationNavigation({ conversation, currentUser }) {
-  const conversationWithId = conversation.membersId.find(
-    memberId => memberId === currentUser.id
-  );
-  const conversationWithName = conversation.memberNames[conversationWithId];
+
+  if (!currentUser) return null;
+
+  const conversationWithName =
+    conversation.memberNames[
+      Object.keys(conversation.memberNames).find(
+        memberId => memberId !== currentUser.id
+      )
+    ];
   return <Tab label={conversationWithName} wrapped={true} />;
 }
 

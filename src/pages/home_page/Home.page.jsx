@@ -1,15 +1,17 @@
 import React from 'react';
-import EditableText from '../../components/editable_text/EditableText.component';
-import Container from '@material-ui/core/Container';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
-function Home() {
-  const [text, setText] = React.useState('Hello What can I do for you?');
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import AdminPanelPage from '../admin_page/AdminPanel.page';
 
-  return (
-    <Container maxWidth='xl'>
-      <EditableText id='test' tooltipTitle='Test' variant='h1' multiline={true} onChange={event => setText(event.target.value)} value={text} />
-    </Container>
-  );
+function Home({ currentUser }) {
+  if (!currentUser) return null; // all mentors
+  return currentUser.role === 'admin' ? <AdminPanelPage /> : null;
 }
 
-export default Home;
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+});
+
+export default connect(mapStateToProps)(Home);

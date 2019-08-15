@@ -35,9 +35,11 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function Profile({ currentUser, history }) {
+function Profile({ currentUser }) {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = React.useState(0);
+
+  if (!currentUser) return null;  
 
   function handleChange(event, newValue) {
     setCurrentTab(newValue);
@@ -54,7 +56,7 @@ function Profile({ currentUser, history }) {
           className={classes.tabs}>
           <Tab label='Generelt' />
           <Tab label='Sikkerhed og login' />
-          {currentUser ? <Tab label='Din Mentor Side' /> : null}
+          {currentUser.role === 'mentor' ? <Tab label='Din Mentor Side' /> : null}
         </Tabs>
       </Grid>
       <Grid item xs={10}>
@@ -81,15 +83,17 @@ function Profile({ currentUser, history }) {
             igen
           </Typography>
         </Box>
-        <Box
-          p={3}
-          component='div'
-          role='tabpanel'
-          hidden={currentTab !== 2}
-          id={'mentorside'}
-          aria-labelledby={'mentorside'}>
-          <MentorProfile switchTab={handleChange} />
-        </Box>
+        {currentUser.role === 'mentor' ? (
+          <Box
+            p={3}
+            component='div'
+            role='tabpanel'
+            hidden={currentTab !== 2}
+            id={'mentorside'}
+            aria-labelledby={'mentorside'}>
+            <MentorProfile switchTab={handleChange} />
+          </Box>
+        ) : null}
       </Grid>
     </Grid>
   );

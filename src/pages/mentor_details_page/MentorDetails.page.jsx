@@ -8,23 +8,28 @@ import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import CardActions from '@material-ui/core/CardActions';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
+import Button from '@material-ui/core/Button';
 
 import BookIcon from '@material-ui/icons/Book';
 import DescriptionIcon from '@material-ui/icons/Description';
 
 import useStyles from './MentorDetails.styles';
+import { setupNewConversationStart } from '../../redux/conversation/conversation.actions';
 import { selectAllMentors } from '../../redux/mentor/mentor.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
 
-function MentorDetails({ match, mentors }) {
+function MentorDetails({ match, mentors, currentUser, setupNewConversation }) {
   const [currentTab, setCurrentTab] = React.useState(0);
   const mentorId = match.params.mentorId;
   const classes = useStyles();
 
   if (!mentors) return null;
+  if (!currentUser) return null;
 
   const mentor = mentors.find(mentor => mentor.id === mentorId);
   const {
@@ -38,6 +43,10 @@ function MentorDetails({ match, mentors }) {
     specializations,
   } = mentor.mentorInfo;
   const { displayName } = mentor;
+
+  function startNewConversation() {
+    setupNewConversation(currentUser, mentor);
+  }
 
   return (
     <Paper className={classes.profilePaper}>
@@ -103,6 +112,17 @@ function MentorDetails({ match, mentors }) {
                 {contactEmail}
               </Typography>
             </CardContent>
+            {currentUser.id !== mentor.id ? (
+              <CardActions style={{ justifyContent: 'center' }}>
+                <Button
+                  variant='contained'
+                  size='large'
+                  color='primary'
+                  onClick={startNewConversation}>
+                  {`Kontakt ${displayName.slice(0, displayName.indexOf(' '))}`}
+                </Button>
+              </CardActions>
+            ) : null}
           </Card>
         </Grid>
         <Grid item xs={8}>
@@ -123,7 +143,9 @@ function MentorDetails({ match, mentors }) {
             hidden={currentTab !== 0}
             id='undervisning'
             aria-labelledby='tab-undervisning'>
-            <Typography variant='body1' style={{overflowWrap: 'break-word'}}>{description}</Typography>
+            <Typography variant='body1' style={{ overflowWrap: 'break-word' }}>
+              {description}
+            </Typography>
           </Box>
           <Box
             p={2}
@@ -142,5 +164,15 @@ function MentorDetails({ match, mentors }) {
 
 const mapStateToProps = createStructuredSelector({
   mentors: selectAllMentors,
+  currentUser: selectCurrentUser,
 });
-export default connect(mapStateToProps)(MentorDetails);
+
+const mapDispatchToProps = dispatch => ({
+  setupNewConversation: (user, mentor) =>
+    dispatch(setupNewConversationStart({ user, mentor })),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MentorDetails);

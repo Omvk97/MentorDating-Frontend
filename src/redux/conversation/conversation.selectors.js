@@ -11,3 +11,8 @@ export const selectIsFetchingConversations = createSelector(
   [selectConversationState],
   conversation => conversation.isFetchingConversations
 );
+
+export const selectErrorCreatingNewConversation = createSelector(
+  [selectConversationState],
+  conversation => conversation.errorCreatingNewConversation
+);

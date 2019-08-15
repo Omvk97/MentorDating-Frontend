@@ -6,7 +6,6 @@ import useStyles from './ConversationMessage.styles';
 import { monthToString, dateHourToString, dateMinuteToString } from './SentAtDate.utils'
 
 function ConversationMessage({ message, currentUserId }) {
-  console.log(message);
   const classes = useStyles();
   const currentUserIsSender = message.senderId === currentUserId;
   const messageAlignment = currentUserIsSender ? 'right' : 'left';

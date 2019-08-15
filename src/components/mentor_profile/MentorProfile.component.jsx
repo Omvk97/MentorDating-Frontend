@@ -53,7 +53,8 @@ function MentorTeachings({
     }
   }, [currentUser]);
 
-  if (!currentUser || !mentorInfoClone) return null;
+  if (!currentUser) return null;
+  if (currentUser.role !== 'mentor') return null;
   const {
     categories,
     contactEmail,
