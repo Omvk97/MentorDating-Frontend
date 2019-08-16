@@ -78,7 +78,7 @@ function App({
               />
               <Route path='/mentorer/kategorier/:categoryName' component={CategoriesPage} />
               <Route path='/workshops' component={WorkshopsPage} />
-              <Route path='/mentor/signup' component={MentorSignUpPage} />
+              <Route path='/ansøg/mentor' component={MentorSignUpPage} />
               <Route path='/profil' component={ProfilePage} />
               <Route path='/mentor/:mentorId' component={MentorDetailsPage} />
               <Route path='/beskeder' component={ConversationsPage} />

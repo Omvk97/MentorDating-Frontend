@@ -52,8 +52,6 @@ function MentorBanner({
   }
 
   function handleChange(event) {
-    console.log(event.target.value);
-
     setSelectedCategory(event.target.value);
   }
 

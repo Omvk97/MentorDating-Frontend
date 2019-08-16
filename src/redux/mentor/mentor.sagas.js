@@ -7,9 +7,7 @@ import {
   fetchCategoryOptionsSuccess,
   fetchCategoryOptionsFailure,
 } from './mentor.actions';
-import { emailSignInStart } from '../user/user.actions';
 import { fetchAllCategoryOptions } from '../../firebase/firestore.mentors';
-import { addMentorApplication } from '../../firebase/firestore.mentorApplications';
 import { firestore } from '../../firebase/firebase.utils';
 import { eventChannel } from 'redux-saga';
 
@@ -33,18 +31,6 @@ export function* fetchMentorsListener() {
   }
 }
 
-export function* sendApplication({ payload: { userId, application } }) {
-  try {
-    yield addMentorApplication(userId, application);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export function* signInMentor(emailAndPassword) {
-  yield put(emailSignInStart(emailAndPassword));
-}
-
 export function* fetchCategoryOptions() {
   try {
     const categories = yield fetchAllCategoryOptions();
@@ -57,12 +43,6 @@ export function* fetchCategoryOptions() {
 export function* onFetchMentorsStart() {
   yield takeLatest(MentorActionTypes.FETCH_MENTORS_START, fetchMentorsListener);
 }
-export function* onSignUpMentorSuccess() {
-  yield takeLatest(MentorActionTypes.SIGN_UP_MENTOR_SUCCESS, signInMentor);
-}
-export function* onMentorSendApplication() {
-  yield takeLatest(MentorActionTypes.SEND_MENTOR_APPLICATION, sendApplication);
-}
 export function* onFetchCategoryOptionsStart() {
   yield takeLatest(MentorActionTypes.FETCH_CATEGORY_OPTIONS_START, fetchCategoryOptions);
 }
@@ -70,7 +50,6 @@ export function* onFetchCategoryOptionsStart() {
 export default function* mentorSagas() {
   yield all([
     call(onFetchMentorsStart),
-    call(onMentorSendApplication),
     call(onFetchCategoryOptionsStart),
   ]);
 }

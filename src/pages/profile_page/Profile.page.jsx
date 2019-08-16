@@ -91,7 +91,7 @@ function Profile({ currentUser }) {
             hidden={currentTab !== 2}
             id={'mentorside'}
             aria-labelledby={'mentorside'}>
-            <MentorProfile switchTab={handleChange} />
+            <MentorProfile />
           </Box>
         ) : null}
       </Grid>

@@ -17,7 +17,7 @@ import useStyles from './SignUpStepper.styles';
 
 import MentorExperienceSurvey from '../mentor_experience_survey/MentorExperienceSurvey.component';
 import PersonalInformation from '../personal_information/PersonalInformation.component';
-import { sendMentorApplication } from '../../../redux/mentor/mentor.actions';
+import { sendApplicationStart } from '../../../redux/application/application.actions';
 import DialogHeader from '../../closeable_dialog_header/DialogHeader.component';
 import { selectCurrentUser } from '../../../redux/user/user.selectors';
 
@@ -47,9 +47,19 @@ function SignUpProcess({ sendMentorApplication, history, currentUser }) {
   const getStepContent = step => {
     switch (step) {
       case 0: // login
-        return <MentorExperienceSurvey onChange={onExperienceChange} values={mentorExperience} />;
+        return (
+          <MentorExperienceSurvey
+            onChange={onExperienceChange}
+            values={mentorExperience}
+          />
+        );
       case 1: // Personal information
-        return <PersonalInformation onChange={onPersonalInformationChange} values={personalInformation} />;
+        return (
+          <PersonalInformation
+            onChange={onPersonalInformationChange}
+            values={personalInformation}
+          />
+        );
       default:
         return 'Fejl';
     }
@@ -115,7 +125,11 @@ function SignUpProcess({ sendMentorApplication, history, currentUser }) {
 
   function sendApplication() {
     setSendApplicationAlertOpen(false);
-    sendMentorApplication({ userId: currentUser.id, application: { ...mentorExperience, ...personalInformation } });
+    sendMentorApplication(currentUser.id, {
+      ...mentorExperience,
+      ...personalInformation,
+    });
+    history.push('/')
   }
 
   return (
@@ -125,10 +139,13 @@ function SignUpProcess({ sendMentorApplication, history, currentUser }) {
         onClose={() => setSendApplicationAlertOpen(false)}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'>
-        <DialogHeader onClose={() => setSendApplicationAlertOpen(false)}>Send andsøgning?</DialogHeader>
+        <DialogHeader onClose={() => setSendApplicationAlertOpen(false)}>
+          Send andsøgning?
+        </DialogHeader>
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
-            Indenfor 2-4 hverdage bliver din ansøgning vurderet. Herefter vil du modtage en mail med resultatet.
+            Indenfor 2-4 hverdage bliver din ansøgning vurderet. Herefter vil du modtage
+            en mail med resultatet.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -153,7 +170,10 @@ function SignUpProcess({ sendMentorApplication, history, currentUser }) {
           <div>
             {getStepContent(activeStep)}
             <div className={classes.controls}>
-              <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton}>
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                className={classes.backButton}>
                 Tilbage
               </Button>
               <Button
@@ -176,7 +196,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-  sendMentorApplication: application => dispatch(sendMentorApplication(application)),
+  sendMentorApplication: (userId, application) =>
+    dispatch(sendApplicationStart({ userId, application })),
 });
 
 export default withRouter(

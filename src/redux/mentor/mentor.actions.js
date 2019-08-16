@@ -11,10 +11,6 @@ export const fetchMentorsFailure = error => ({
   type: MentorActionTypes.FETCH_MENTORS_FAILURE,
   payload: error,
 });
-export const sendMentorApplication = application => ({
-  type: MentorActionTypes.SEND_MENTOR_APPLICATION,
-  payload: application,
-});
 export const fetchCategoryOptionsStart = () => ({
   type: MentorActionTypes.FETCH_CATEGORY_OPTIONS_START,
 });

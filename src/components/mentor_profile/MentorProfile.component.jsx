@@ -37,7 +37,6 @@ function MentorTeachings({
   currentUser,
   updateMentorInfoStart,
   temporaryMentorInfoSave,
-  switchTab,
 }) {
   const classes = useStyles();
   const theme = useTheme();
@@ -49,12 +48,15 @@ function MentorTeachings({
 
   useEffect(() => {
     if (currentUser) {
-      setMentorInfoClone(Object.assign({}, currentUser.mentorInfo));
+      const mentorInfo = Object.assign({}, currentUser.mentorInfo);
+      setMentorInfoClone(mentorInfo);
     }
   }, [currentUser]);
 
   if (!currentUser) return null;
   if (currentUser.role !== 'mentor') return null;
+  if (!mentorInfoClone) return null;
+
   const {
     categories,
     contactEmail,
@@ -79,7 +81,6 @@ function MentorTeachings({
       case 'categories':
         const specializationClone = Object.assign({}, specializations);
         delete specializationClone[categoryToDelete];
-        console.log(specializationClone);
 
         setMentorInfoClone({
           ...mentorInfoClone,

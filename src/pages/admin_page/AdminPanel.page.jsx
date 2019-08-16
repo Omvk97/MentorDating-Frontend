@@ -13,20 +13,29 @@ import IconButton from '@material-ui/core/IconButton';
 import CheckIcon from '@material-ui/icons/Check';
 import BlockIcon from '@material-ui/icons/Block';
 
-import { fetchAllApplicationsStart } from '../../redux/application/application.actions';
+import {
+  fetchAllApplicationsStart,
+  acceptApplicationStart,
+  declineApplicationStart,
+} from '../../redux/application/application.actions';
 import { selectApplications } from '../../redux/application/application.selectors';
 
-function AdminPanel({ fetchApplications, applications }) {
+function AdminPanel({
+  fetchApplications,
+  applications,
+  acceptApplication,
+  declineApplication,
+}) {
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
 
-  function acceptApplication() {
-    
+  function onAcceptApplication(applicationId) {
+    acceptApplication(applicationId);
   }
 
-  function declineApplication() {
-
+  function onDeclineApplication(applicationId) {
+    declineApplication(applicationId);
   }
 
   return (
@@ -39,6 +48,8 @@ function AdminPanel({ fetchApplications, applications }) {
             <TableCell>Uddannelse</TableCell>
             <TableCell>Erfaring</TableCell>
             <TableCell>Grunde</TableCell>
+            <TableCell>Godkend</TableCell>
+            <TableCell>Afvis</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -56,12 +67,16 @@ function AdminPanel({ fetchApplications, applications }) {
               <TableCell>{application.previousExperience}</TableCell>
               <TableCell rowSpan={2}>{application.reasons}</TableCell>
               <TableCell>
-                <IconButton size='small'>
+                <IconButton
+                  size='small'
+                  onClick={() => onAcceptApplication(application.id)}>
                   <CheckIcon />
                 </IconButton>
               </TableCell>
               <TableCell>
-                <IconButton size='small'>
+                <IconButton
+                  size='small'
+                  onClick={() => onDeclineApplication(application.id)}>
                   <BlockIcon />
                 </IconButton>
               </TableCell>
@@ -79,6 +94,9 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => ({
   fetchApplications: () => dispatch(fetchAllApplicationsStart()),
+  acceptApplication: applicationId => dispatch(acceptApplicationStart({ applicationId })),
+  declineApplication: applicationId =>
+    dispatch(declineApplicationStart({ applicationId })),
 });
 
 export default connect(
