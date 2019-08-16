@@ -14,6 +14,11 @@ import {
   setMentorPictureSuccess,
   setMentorPictureFailure,
 } from './user.actions';
+import {
+  openSnackbar,
+  setSnackbarMessage,
+  setSnackbarVariant,
+} from '../layout/layout.actions';
 
 import { auth, googleProvider } from '../../firebase/firebase.utils.js';
 import { getCurrentUser } from '../../firebase/firestore.users';
@@ -26,8 +31,15 @@ import {
 export function* getSnapshotFromUserAuth(userAuth, additionalData) {
   try {
     const userSnapshot = yield call(createUserProfileDocument, userAuth, additionalData);
-    yield put(signInSuccess({ id: userSnapshot.id, ...userSnapshot.data() }));
+    const user = userSnapshot.data();
+    yield put(signInSuccess({ id: userSnapshot.id, ...user }));
+    yield put(setSnackbarMessage(`Hej ${user.displayName}`));
+    yield put(setSnackbarVariant('success'));
+    yield put(openSnackbar());
   } catch (error) {
+    yield put(setSnackbarMessage('Ukendt login'));
+    yield put(setSnackbarVariant('error'));
+    yield put(openSnackbar());
     yield put(signInFailure(error));
   }
 }

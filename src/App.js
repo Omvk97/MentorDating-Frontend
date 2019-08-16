@@ -22,6 +22,7 @@ import {
   fetchCategoryOptionsStart,
 } from './redux/mentor/mentor.actions';
 import Footer from './components/footer/Footer.component';
+import CustomizableSnackbar from './components/customizable_snackbar/CustomizableSnackbar.component.jsx';
 
 const SignInAndSignUpPage = lazy(() =>
   import('./pages/sign_in_and_sign_up/SignInAndSignUp.page')
@@ -82,6 +83,7 @@ function App({
               <Route path='/profil' component={ProfilePage} />
               <Route path='/mentor/:mentorId' component={MentorDetailsPage} />
               <Route path='/beskeder' component={ConversationsPage} />
+              <CustomizableSnackbar />
             </ErrorBoundary>
           </Container>
           <Footer />
