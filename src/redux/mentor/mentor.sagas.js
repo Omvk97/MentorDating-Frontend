@@ -11,7 +11,7 @@ import { fetchAllCategoryOptions } from '../../firebase/firestore.mentors';
 import { firestore } from '../../firebase/firebase.utils';
 import { eventChannel } from 'redux-saga';
 
-export function* fetchMentorsListener() {
+function* fetchMentorsListener() {
   const mentorsRef = firestore.collection('users').where('role', '==', 'mentor');
   const channel = eventChannel(emit => {
     const unsubscribe = mentorsRef.onSnapshot(emit);
@@ -31,7 +31,7 @@ export function* fetchMentorsListener() {
   }
 }
 
-export function* fetchCategoryOptions() {
+function* fetchCategoryOptions() {
   try {
     const categories = yield fetchAllCategoryOptions();
     yield put(fetchCategoryOptionsSuccess(categories));
@@ -40,16 +40,13 @@ export function* fetchCategoryOptions() {
   }
 }
 
-export function* onFetchMentorsStart() {
+function* onFetchMentorsStart() {
   yield takeLatest(MentorActionTypes.FETCH_MENTORS_START, fetchMentorsListener);
 }
-export function* onFetchCategoryOptionsStart() {
+function* onFetchCategoryOptionsStart() {
   yield takeLatest(MentorActionTypes.FETCH_CATEGORY_OPTIONS_START, fetchCategoryOptions);
 }
 
 export default function* mentorSagas() {
-  yield all([
-    call(onFetchMentorsStart),
-    call(onFetchCategoryOptionsStart),
-  ]);
+  yield all([call(onFetchMentorsStart), call(onFetchCategoryOptionsStart)]);
 }

@@ -12,7 +12,7 @@ import firebase, { firestore } from '../../firebase/firebase.utils';
 import { eventChannel } from 'redux-saga';
 import ConversationActionTypes from './conversation.types';
 
-export function* fetchConversationsListener({ payload: userId }) {
+function* fetchConversationsListener({ payload: userId }) {
   const conversationsRef = firestore
     .collection('conversations')
     .where('membersId', 'array-contains', userId);
@@ -35,15 +35,14 @@ export function* fetchConversationsListener({ payload: userId }) {
   }
 }
 
-export function* sendMessage({ payload: { conversationId, message } }) {
+function* sendMessage({ payload: { conversationId, message, receiverId } }) {
   try {
     const conversationRef = firestore.doc(`conversations/${conversationId}`);
     conversationRef.update({
       messages: firebase.firestore.FieldValue.arrayUnion(message),
+      ['unreadMessages.' + receiverId]: firebase.firestore.FieldValue.increment(1),
     });
     yield put(sendMessageSuccess(message.sentAt));
-    console.log(message);
-    console.log(conversationId);
   } catch (error) {
     console.log(error);
 
@@ -51,15 +50,17 @@ export function* sendMessage({ payload: { conversationId, message } }) {
   }
 }
 
-export function* setupConversation({ payload: { user, mentor } }) {
+function* setupConversation({ payload: { user, mentor } }) {
   try {
     const userId = user.id;
     const mentorId = mentor.id;
+
     const conversationId =
       user.id > mentor.id ? user.id + mentor.id : mentor.id + user.id;
     const collectionRef = firestore.collection('conversations').doc(conversationId);
 
-    const snapshot = collectionRef.get();
+    const snapshot = yield collectionRef.get();
+
     if (snapshot.exists) {
       yield put(setupNewConversationFailure('Already exists'));
     } else {
@@ -79,19 +80,38 @@ export function* setupConversation({ payload: { user, mentor } }) {
   }
 }
 
-export function* onFetchConversationsStart() {
+function* setConversationToRead({ payload: { conversationId, userId } }) {
+  try {
+    console.log(conversationId, userId);
+
+    const conversationRef = yield firestore.doc(`conversations/${conversationId}`);
+    yield conversationRef.update({
+      [`unreadMessages.${userId}`]: 0,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function* onFetchConversationsStart() {
   yield takeLatest(
     ConversationActionTypes.FETCH_CONVERATIONS_START,
     fetchConversationsListener
   );
 }
-export function* onSendMessageStart() {
+function* onSendMessageStart() {
   yield takeLatest(ConversationActionTypes.SEND_MESSAGE_START, sendMessage);
 }
-export function* onSetupNewConversationStart() {
+function* onSetupNewConversationStart() {
   yield takeLatest(
     ConversationActionTypes.SETUP_NEW_CONVERSATION_START,
     setupConversation
+  );
+}
+function* onSetConversationToRead() {
+  yield takeLatest(
+    ConversationActionTypes.SET_CONVERSATION_TO_READ,
+    setConversationToRead
   );
 }
 
@@ -100,5 +120,6 @@ export default function* mentorSagas() {
     call(onFetchConversationsStart),
     call(onSendMessageStart),
     call(onSetupNewConversationStart),
+    call(onSetConversationToRead),
   ]);
 }

@@ -4,10 +4,11 @@ import { createStructuredSelector } from 'reselect';
 
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import AdminPanelPage from '../admin_page/AdminPanel.page';
+import CategoriesPage from '../categories_page/Categories.page';
 
 function Home({ currentUser }) {
-  if (!currentUser) return null; // all mentors
-  return currentUser.role === 'admin' ? <AdminPanelPage /> : null;
+  if (!currentUser) return <CategoriesPage />; // all mentors
+  return currentUser.role === 'admin' ? <AdminPanelPage /> : <CategoriesPage />;
 }
 
 const mapStateToProps = createStructuredSelector({

@@ -12,9 +12,9 @@ export const fetchConversationsFailure = error => ({
   type: ConversationActionTypes.FETCH_CONVERATIONS_FAILURE,
   payload: error,
 });
-export const sendMessageStart = messageAndConversationId => ({
+export const sendMessageStart = messageAndConversationIdAndReceiverId => ({
   type: ConversationActionTypes.SEND_MESSAGE_START,
-  payload: messageAndConversationId,
+  payload: messageAndConversationIdAndReceiverId,
 });
 export const sendMessageSuccess = messageTimestamp => ({
   type: ConversationActionTypes.SEND_MESSAGE_SUCCESS,
@@ -34,4 +34,8 @@ export const setupNewConversationSuccess = () => ({
 export const setupNewConversationFailure = error => ({
   type: ConversationActionTypes.SETUP_NEW_CONVERSATION_FAILURE,
   payload: error,
+});
+export const setConversationToRead = conversationIdAndUserId => ({
+  type: ConversationActionTypes.SET_CONVERSATION_TO_READ,
+  payload: conversationIdAndUserId,
 });

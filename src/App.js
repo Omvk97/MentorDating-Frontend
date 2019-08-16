@@ -36,7 +36,9 @@ const ProfilePage = lazy(() => import('./pages/profile_page/Profile.page'));
 const MentorDetailsPage = lazy(() =>
   import('./pages/mentor_details_page/MentorDetails.page')
 );
-const ConversationsPage = lazy(() => import('./pages/conversations_page/Conversations.page'))
+const ConversationsPage = lazy(() =>
+  import('./pages/conversations_page/Conversations.page')
+);
 
 const theme = createMuiTheme({
   palette: {
@@ -77,7 +79,10 @@ function App({
                   currentUser ? <Redirect to='/' /> : <SignInAndSignUpPage />
                 }
               />
-              <Route path='/mentorer/kategorier/:categoryName' component={CategoriesPage} />
+              <Route
+                path='/mentorer/kategorier/:categoryName'
+                component={CategoriesPage}
+              />
               <Route path='/workshops' component={WorkshopsPage} />
               <Route path='/ansøg/mentor' component={MentorSignUpPage} />
               <Route path='/profil' component={ProfilePage} />

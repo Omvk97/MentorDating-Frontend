@@ -28,7 +28,7 @@ import {
   setUserPicture,
 } from '../../firebase/firestore.users';
 
-export function* getSnapshotFromUserAuth(userAuth, additionalData) {
+function* getSnapshotFromUserAuth(userAuth, additionalData) {
   try {
     const userSnapshot = yield call(createUserProfileDocument, userAuth, additionalData);
     const user = userSnapshot.data();
@@ -44,7 +44,7 @@ export function* getSnapshotFromUserAuth(userAuth, additionalData) {
   }
 }
 
-export function* signInWithGoogle() {
+function* signInWithGoogle() {
   try {
     const { user } = yield auth.signInWithPopup(googleProvider);
     yield getSnapshotFromUserAuth(user);
@@ -53,7 +53,7 @@ export function* signInWithGoogle() {
   }
 }
 
-export function* signInWithEmail({ payload: { email, password } }) {
+function* signInWithEmail({ payload: { email, password } }) {
   try {
     const { user } = yield auth.signInWithEmailAndPassword(email, password);
     yield getSnapshotFromUserAuth(user);
@@ -62,7 +62,7 @@ export function* signInWithEmail({ payload: { email, password } }) {
   }
 }
 
-export function* isUserAuthenticated() {
+function* isUserAuthenticated() {
   try {
     const userAuth = yield getCurrentUser();
     if (!userAuth) return;
@@ -72,7 +72,7 @@ export function* isUserAuthenticated() {
   }
 }
 
-export function* signOut() {
+function* signOut() {
   try {
     yield auth.signOut();
     yield put(signOutSuccess());
@@ -81,7 +81,7 @@ export function* signOut() {
   }
 }
 
-export function* signUp({ payload: { email, password, displayName } }) {
+function* signUp({ payload: { email, password, displayName } }) {
   try {
     const { user } = yield auth.createUserWithEmailAndPassword(email, password);
     yield put(signUpSuccess({ user, additionalData: { displayName } }));
@@ -90,7 +90,7 @@ export function* signUp({ payload: { email, password, displayName } }) {
   }
 }
 
-export function* updateMentorInfo({ payload: { userId, updatedMentorInfo } }) {
+function* updateMentorInfo({ payload: { userId, updatedMentorInfo } }) {
   try {
     yield call(updateUserMentorInfo, userId, updatedMentorInfo);
     yield put(updateMentorInfoSuccess(updatedMentorInfo));
@@ -98,7 +98,7 @@ export function* updateMentorInfo({ payload: { userId, updatedMentorInfo } }) {
     yield put(updateMentorInfoFailure(error));
   }
 }
-export function* uploadMentorPicture({ payload: { userId, pictureBlob } }) {
+function* uploadMentorPicture({ payload: { userId, pictureBlob } }) {
   try {
     const downloadUrl = yield call(setUserPicture, userId, pictureBlob);
     yield put(setMentorPictureSuccess(downloadUrl));
@@ -107,39 +107,39 @@ export function* uploadMentorPicture({ payload: { userId, pictureBlob } }) {
   }
 }
 
-export function* signInAfterSignUp({ payload: { user, additionalData } }) {
+function* signInAfterSignUp({ payload: { user, additionalData } }) {
   yield getSnapshotFromUserAuth(user, additionalData);
 }
 
-export function* onGoogleSignInStart() {
+function* onGoogleSignInStart() {
   yield takeLatest(UserActionTypes.GOOGLE_SIGN_IN_START, signInWithGoogle);
 }
 
-export function* onEmailSignInStart() {
+function* onEmailSignInStart() {
   yield takeLatest(UserActionTypes.EMAIL_SIGN_IN_START, signInWithEmail);
 }
 
-export function* onCheckUserSession() {
+function* onCheckUserSession() {
   yield takeLatest(UserActionTypes.CHECK_USER_SESSION, isUserAuthenticated);
 }
 
-export function* onSignOutStart() {
+function* onSignOutStart() {
   yield takeLatest(UserActionTypes.SIGN_OUT_START, signOut);
 }
 
-export function* onSignUpStart() {
+function* onSignUpStart() {
   yield takeLatest(UserActionTypes.SIGN_UP_START, signUp);
 }
 
-export function* onSignUpSuccess() {
+function* onSignUpSuccess() {
   yield takeLatest(UserActionTypes.SIGN_UP_SUCCESS, signInAfterSignUp);
 }
 
-export function* onUpdateMentorInfo() {
+function* onUpdateMentorInfo() {
   yield takeLatest(UserActionTypes.UPDATE_MENTOR_INFO_START, updateMentorInfo);
 }
 
-export function* onSetMentorPicture() {
+function* onSetMentorPicture() {
   yield takeLatest(UserActionTypes.SET_MENTOR_PICTURE_START, uploadMentorPicture);
 }
 

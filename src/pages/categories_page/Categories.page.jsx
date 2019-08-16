@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+import { withRouter } from 'react-router-dom';
 
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -14,10 +15,14 @@ function Categories({ mentors, match }) {
   const gridColumn = useMediaQuery(theme.breakpoints.down('xs'));
 
   if (!mentors) return null;
-  const sortedMentors = mentors.filter(mentor =>
-    mentor.mentorInfo.categories.includes(match.params.categoryName)
-  );
-  if (sortedMentors.length === 0) return <div>Ingen mentorer</div>;
+
+  const mentorsToDisplay = match.params.categoryName
+    ? mentors.filter(mentor =>
+        mentor.mentorInfo.categories.includes(match.params.categoryName)
+      )
+    : mentors;
+
+  if (mentorsToDisplay.length === 0) return <div>Ingen mentorer</div>;
 
   return (
     <Grid
@@ -25,8 +30,8 @@ function Categories({ mentors, match }) {
       spacing={2}
       justify={gridColumn ? 'center' : 'flex-start'}
       direction={gridColumn ? 'column' : 'row'}
-      alignItems={ gridColumn ? 'center' : 'flex-start'}>
-      {sortedMentors.map(mentor => (
+      alignItems={gridColumn ? 'center' : 'flex-start'}>
+      {mentorsToDisplay.map(mentor => (
         <React.Fragment key={mentor.id}>
           <Grid item xs={12} sm={6} md={4} lg={3}>
             <MentorOverviewCard mentor={mentor} />
@@ -41,4 +46,4 @@ const mapStateToProps = createStructuredSelector({
   mentors: selectAllMentors,
 });
 
-export default connect(mapStateToProps)(Categories);
+export default withRouter(connect(mapStateToProps)(Categories));

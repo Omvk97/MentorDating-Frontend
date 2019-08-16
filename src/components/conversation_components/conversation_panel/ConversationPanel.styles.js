@@ -4,7 +4,8 @@ export default makeStyles(theme => ({
   messagesArea: {
     height: 500,
     width: '100%',
-    overflow: 'auto'
+    overflow: 'auto',
+    padding: theme.spacing(0.5),
   },
   margin: {
     marginTop: theme.spacing(1),

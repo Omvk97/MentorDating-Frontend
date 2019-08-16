@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link as RouterLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -26,8 +26,16 @@ import useStyles from './Header.styles';
 import SideDrawer from './drawer/Drawer.component';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { signOutStart } from '../../redux/user/user.actions';
+import { fetchConversationsStart } from '../../redux/conversation/conversation.actions';
+import { selectNumberOfUnreadMessages } from '../../redux/conversation/conversation.selectors';
 
-function Header({ currentUser, signOutStart }) {
+function Header({
+  currentUser,
+  signOutStart,
+  history,
+  fetchConversations,
+  unreadMessages,
+}) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 
@@ -35,11 +43,16 @@ function Header({ currentUser, signOutStart }) {
 
   const accountMenuOpen = Boolean(anchorEl);
 
+  useEffect(() => {
+    if (currentUser) fetchConversations(currentUser.id);
+  }, [currentUser, fetchConversations]);
+
   function handleMenuClose() {
     setAnchorEl(null);
   }
 
   function onLogOut() {
+    history.push('/logind');
     handleMenuClose();
     signOutStart();
   }
@@ -84,7 +97,7 @@ function Header({ currentUser, signOutStart }) {
                 aria-haspopup='true'
                 onClick={event => setAnchorEl(event.currentTarget)}
                 color='inherit'>
-                <Badge badgeContent={99} color='error'>
+                <Badge badgeContent={unreadMessages} color='error'>
                   <Avatar className={classes.avatar}>
                     {currentUser.displayName.charAt(0)}
                   </Avatar>
@@ -115,7 +128,7 @@ function Header({ currentUser, signOutStart }) {
                   to='/beskeder'
                   onClick={handleMenuClose}>
                   <ListItemIcon>
-                    <Badge badgeContent={99} color='error'>
+                    <Badge badgeContent={unreadMessages} color='error'>
                       <MessageIcon />
                     </Badge>
                   </ListItemIcon>
@@ -151,13 +164,17 @@ function Header({ currentUser, signOutStart }) {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  unreadMessages: selectNumberOfUnreadMessages,
 });
 
 const mapDispatchToProps = dispatch => ({
   signOutStart: () => dispatch(signOutStart()),
+  fetchConversations: userId => dispatch(fetchConversationsStart(userId)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Header);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Header)
+);

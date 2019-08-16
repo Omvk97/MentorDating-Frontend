@@ -6,7 +6,6 @@ import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Tabs from '@material-ui/core/Tabs';
 
-import { fetchConversationsStart } from '../../redux/conversation/conversation.actions';
 import {
   selectAllConversations,
   selectIsFetchingConversations,
@@ -27,7 +26,6 @@ function Conversations({
 
   useEffect(() => {
     if (!currentUser) return;
-    fetchConversationsStart(currentUser.id);
   }, [fetchConversationsStart, currentUser]);
 
   if (isFetchingConversations)
@@ -44,7 +42,6 @@ function Conversations({
           aria-label='samtaler'
           className={classes.tabs}>
           {conversations.map(con => {
-            console.log(con);
             return <ConversationNavigation key={con.id} conversation={con} />;
           })}
         </Tabs>
@@ -64,11 +61,6 @@ const mapStateToProps = createStructuredSelector({
   isFetchingConversations: selectIsFetchingConversations,
 });
 
-const mapDispatchToProps = dispatch => ({
-  fetchConversationsStart: userId => dispatch(fetchConversationsStart(userId)),
-});
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(Conversations);

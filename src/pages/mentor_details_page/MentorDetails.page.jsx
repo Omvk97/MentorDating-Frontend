@@ -23,13 +23,12 @@ import { setupNewConversationStart } from '../../redux/conversation/conversation
 import { selectAllMentors } from '../../redux/mentor/mentor.selectors';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 
-function MentorDetails({ match, mentors, currentUser, setupNewConversation }) {
+function MentorDetails({ match, mentors, currentUser, setupNewConversation, history }) {
   const [currentTab, setCurrentTab] = React.useState(0);
   const mentorId = match.params.mentorId;
   const classes = useStyles();
 
   if (!mentors) return null;
-  if (!currentUser) return null;
 
   const mentor = mentors.find(mentor => mentor.id === mentorId);
   const {
@@ -45,7 +44,14 @@ function MentorDetails({ match, mentors, currentUser, setupNewConversation }) {
   const { displayName } = mentor;
 
   function startNewConversation() {
-    setupNewConversation(currentUser, mentor);
+    if (!currentUser) {
+      history.push('/logind');
+      return;
+    }
+    if (currentUser.id !== mentor.id) { // mentors can't contact themselves
+      setupNewConversation(currentUser, mentor);
+      history.push('/beskeder')
+    }
   }
 
   return (
@@ -112,17 +118,15 @@ function MentorDetails({ match, mentors, currentUser, setupNewConversation }) {
                 {contactEmail}
               </Typography>
             </CardContent>
-            {currentUser.id !== mentor.id ? (
-              <CardActions style={{ justifyContent: 'center' }}>
-                <Button
-                  variant='contained'
-                  size='large'
-                  color='primary'
-                  onClick={startNewConversation}>
-                  {`Kontakt ${displayName.slice(0, displayName.indexOf(' '))}`}
-                </Button>
-              </CardActions>
-            ) : null}
+            <CardActions style={{ justifyContent: 'center' }}>
+              <Button
+                variant='contained'
+                size='large'
+                color='primary'
+                onClick={startNewConversation}>
+                {`Skriv til ${displayName.slice(0, displayName.indexOf(' '))}`}
+              </Button>
+            </CardActions>
           </Card>
         </Grid>
         <Grid item xs={8}>

@@ -16,7 +16,10 @@ import SendIcon from '@material-ui/icons/Send';
 import useStyles from './ConversationPanel.styles';
 import { selectCurrentUser } from '../../../redux/user/user.selectors';
 import ConversationMessage from '../conversation_message/ConversationMessage.component';
-import { sendMessageStart } from '../../../redux/conversation/conversation.actions';
+import {
+  sendMessageStart,
+  setConversationToRead,
+} from '../../../redux/conversation/conversation.actions';
 
 function ConversationPanel({
   value,
@@ -24,6 +27,7 @@ function ConversationPanel({
   sendMessageStart,
   conversation,
   currentUser,
+  setConversationToRead,
 }) {
   const classes = useStyles();
   const [newMessage, setNewMessage] = React.useState('');
@@ -47,6 +51,10 @@ function ConversationPanel({
       Object.keys(conversation.memberNames).find(memberId => memberId !== currentUser.id)
     ];
 
+  function focusConversation() {
+    setConversationToRead(conversation.id, currentUser.id);
+  }
+
   function sendNewMessage() {
     if (!newMessage) return;
     const message = {
@@ -54,7 +62,10 @@ function ConversationPanel({
       senderId: currentUser.id,
       sentAt: new Date(),
     };
-    sendMessageStart(message, conversation.id);
+    const receiverId = conversation.membersId.find(
+      memberId => memberId !== currentUser.id
+    );
+    sendMessageStart(message, conversation.id, receiverId);
     setNewMessage('');
   }
 
@@ -73,6 +84,7 @@ function ConversationPanel({
 
   return (
     <Box
+      onFocus={focusConversation}
       component='div'
       role='tabpanel'
       hidden={value !== index}
@@ -126,8 +138,10 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch => ({
-  sendMessageStart: (message, conversationId) =>
-    dispatch(sendMessageStart({ message, conversationId })),
+  sendMessageStart: (message, conversationId, receiverId) =>
+    dispatch(sendMessageStart({ message, conversationId, receiverId })),
+  setConversationToRead: (conversationId, userId) =>
+    dispatch(setConversationToRead({ conversationId, userId })),
 });
 
 export default connect(
