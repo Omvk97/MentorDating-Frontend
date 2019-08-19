@@ -13,12 +13,11 @@ const middlewares = [sagaMiddleware];
 if (process.env.NODE_ENV === 'development') {
   middlewares.push(logger);
 }
-let applyMiddlewares =
-  process.env.NODE_ENV === 'development'
-    ? composeWithDevTools(applyMiddleware(...middlewares))
-    : applyMiddleware(...middlewares);
 
-export const store = createStore(rootReducer, applyMiddlewares);
+export const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(...middlewares))
+);
 
 sagaMiddleware.run(rootSaga);
 

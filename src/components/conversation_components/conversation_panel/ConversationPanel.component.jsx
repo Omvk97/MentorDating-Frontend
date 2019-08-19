@@ -44,7 +44,8 @@ function ConversationPanel({
 
   useEffect(() => {
     scrollToBottom();
-  }, [conversation.messages]);
+    console.log(value, index);
+  }, [conversation.messages, value, index]);
 
   const conversationWithName =
     conversation.memberNames[

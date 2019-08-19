@@ -31,7 +31,7 @@ import {
 function* getSnapshotFromUserAuth(userAuth, additionalData) {
   try {
     const userSnapshot = yield call(createUserProfileDocument, userAuth, additionalData);
-    const user = userSnapshot.data();
+    const user = yield userSnapshot.data();
     yield put(signInSuccess({ id: userSnapshot.id, ...user }));
     yield put(setSnackbarMessage(`Hej ${user.displayName}`));
     yield put(setSnackbarVariant('success'));

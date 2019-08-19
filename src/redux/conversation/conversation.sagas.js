@@ -71,6 +71,10 @@ function* setupConversation({ payload: { user, mentor } }) {
         },
         membersId: [userId, mentorId],
         messages: [],
+        unreadMessages: {
+          [userId]: 0,
+          [mentorId]: 0,
+        },
       };
       collectionRef.set(conversationObject);
       yield put(setupNewConversationSuccess());
