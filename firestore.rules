@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  		function userExists() {
+      	return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+      }
+  		match /mentorApplications/{applicationId} {
+      	allow read: if request.auth.uid == 'Tmz62ZodydU2TW3KJWu03TqDDGw1'
+        allow write: if userExists();
+      }
+      match /categories/{categoryId} {
+      	allow read
+      }
+      match /conversations/{conversationId} {
+      	allow read
+        allow write: if request.auth.uid != null
+      }
+      match /users/{userId} {
+      	allow read
+      	allow update: if request.auth.uid == userId || request.auth.uid == 'Tmz62ZodydU2TW3KJWu03TqDDGw1'
+        allow create
+      }
+      match /mentors/{mentorId} {
+        allow read;
+      	allow create: if userExists();
+      	allow update: if request.auth.uid == mentorId
+        && (request.resource.data.keys() == resource.data.keys());
+        allow delete: if userExists() && request.auth.uid == mentorId;
+      }
+    }
+}
