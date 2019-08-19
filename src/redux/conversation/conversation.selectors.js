@@ -22,8 +22,6 @@ export const selectNumberOfUnreadMessages = createSelector(
   [selectConversationState, selectUser],
   (conversation, user) => {
     if (user) {
-      console.log(user.id);
-
       const totalNumberOfMessages = conversation.conversations.reduce(
         (total, conversation) => {
           return total + conversation.unreadMessages[user.id];
