@@ -82,8 +82,6 @@ function* setupConversation({ payload: { user, mentor } }) {
 
 function* setConversationToRead({ payload: { conversationId, userId } }) {
   try {
-    console.log(conversationId, userId);
-
     const conversationRef = yield firestore.doc(`conversations/${conversationId}`);
     yield conversationRef.update({
       [`unreadMessages.${userId}`]: 0,

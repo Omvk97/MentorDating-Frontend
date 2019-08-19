@@ -8,7 +8,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Avatar from '@material-ui/core/Avatar';
@@ -20,7 +19,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Editicon from '@material-ui/icons/Edit';
 import MessageIcon from '@material-ui/icons/Message';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
-import SearchIcon from '@material-ui/icons/Search';
 
 import useStyles from './Header.styles';
 import SideDrawer from './drawer/Drawer.component';
@@ -76,19 +74,6 @@ function Header({
             className={classes.title}>
             MentorDating
           </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder='Søg...'
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
           {currentUser ? (
             <div>
               <IconButton

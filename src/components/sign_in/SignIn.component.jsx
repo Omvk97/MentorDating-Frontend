@@ -98,15 +98,10 @@ function SignIn({ match, emailSignInStart, googleSignInStart }) {
             </Grid>
           </Grid>
           <ThemeProvider theme={buttonSignInTheme}>
-            <Grid container className={classes.signInWithOthers}>
-              <Grid item xs>
+            <Grid container className={classes.signInWithOthers} justify='center'>
+              <Grid item>
                 <Button color='primary' variant='contained' onClick={googleSignInStart}>
                   Log ind med Google
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button color='secondary' variant='contained'>
-                  Log ind med Twitter
                 </Button>
               </Grid>
             </Grid>

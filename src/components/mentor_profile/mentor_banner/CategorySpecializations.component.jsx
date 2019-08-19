@@ -52,10 +52,10 @@ function CategorySpecializations({ specializations, category, onChange, onDelete
 
   return (
     <Grid container alignItems='center' justify='space-between'>
-      <Grid item xs={2}>
+      <Grid item xs={4} md={2}>
         <Typography variant='subtitle2'>{category}</Typography>
       </Grid>
-      <Grid item xs={9}>
+      <Grid item xs={7} md={9}>
         <div>
           {specializations
             ? specializations.map(spec => (

@@ -128,7 +128,7 @@ function MentorTeachings({
               specializations={specializations}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Card raised className={classes.mentorCard}>
               {pictureUrl ? (
                 <CardMedia className={classes.media} title='Mentor Billede'>
@@ -176,7 +176,7 @@ function MentorTeachings({
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={12} md={8}>
             <Tabs
               value={currentTab}
               onChange={(event, value) => setCurrentTab(value)}
